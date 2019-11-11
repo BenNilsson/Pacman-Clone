@@ -1,0 +1,39 @@
+﻿  Pacman.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include\vector(1638): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>::_Mypair': class 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>'
+          with
+          [
+              _Ty=S2D::Input::Keys
+          ]
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include\vector(1638): note: see declaration of 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
+          with
+          [
+              _Ty=S2D::Input::Keys
+          ]
+  C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): note: see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
+          with
+          [
+              _Ty=S2D::Input::Keys
+          ]
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(56): warning C4154: deletion of an array expression; conversion to pointer supplied
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(252): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(270): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(274): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include\vector(1638): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>::_Mypair': class 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>'
+          with
+          [
+              _Ty=S2D::Input::Keys
+          ]
+  C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include\vector(1638): note: see declaration of 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
+          with
+          [
+              _Ty=S2D::Input::Keys
+          ]
+  C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): note: see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
+          with
+          [
+              _Ty=S2D::Input::Keys
+          ]
+  Generating Code...
+  Pacman.vcxproj -> C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Debug\Pacman.exe
