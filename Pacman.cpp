@@ -121,8 +121,6 @@ void Pacman::Draw(int elapsedTime)
 	// Start Drawing
 	SpriteBatch::BeginDraw();
 
-	// Draw Player
-	SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
 
 	// Draw Munchies
 	for (int i = 0; i < MUNCHIECOUNT; i++)
@@ -130,6 +128,8 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_munchies[i]->texture, _munchies[i]->position, _munchies[i]->rect);
 	}
 
+	// Draw Player
+	SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
 
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::White);
