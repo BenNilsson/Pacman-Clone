@@ -209,25 +209,38 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
 {
 	// Checks if D key is pressed
 	if (state->IsKeyDown(Input::Keys::D)) {
-		_pacman->position->X += _cPacmanSpeed * elapsedTime; //Moves Pacman across X axis
 		_pacman->direction = 0;
 	}
 
 	// Checks if A key is pressed
 	else if (state->IsKeyDown(Input::Keys::A)) {
-		_pacman->position->X -= _cPacmanSpeed * elapsedTime; // Moves Pacman in the minus direction of the X axis
 		_pacman->direction = 2;
 	}
 	// Checks if W key is pressed
 	else if (state->IsKeyDown(Input::Keys::W)) {
-		_pacman->position->Y -= _cPacmanSpeed * elapsedTime;
 		_pacman->direction = 3;
 	}
 
 	// Checks if S key is pressed
 	else if (state->IsKeyDown(Input::Keys::S)) {
-		_pacman->position->Y += _cPacmanSpeed * elapsedTime;
 		_pacman->direction = 1;
+	}
+
+	// Move pacman in the direction of him facing
+	switch (_pacman->direction)
+	{
+	case 0:
+		_pacman->position->X += _cPacmanSpeed * elapsedTime;
+		break;
+	case 1:
+		_pacman->position->Y += _cPacmanSpeed * elapsedTime;
+		break;
+	case 2:
+		_pacman->position->X -= _cPacmanSpeed * elapsedTime;
+		break;
+	case 3:
+		_pacman->position->Y -= _cPacmanSpeed * elapsedTime;
+		break;
 	}
 }
 

@@ -16,7 +16,7 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\1
           ]
 C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(56): warning C4154: deletion of an array expression; conversion to pointer supplied
 C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(252): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(270): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(274): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(264): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(282): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(286): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Pacman.vcxproj -> C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Debug\Pacman.exe
