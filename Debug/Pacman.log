@@ -1,22 +1,138 @@
 ﻿  Pacman.cpp
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include\vector(1638): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>::_Mypair': class 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>'
-          with
-          [
-              _Ty=S2D::Input::Keys
-          ]
-  C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.20.27508\include\vector(1638): note: see declaration of 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
-          with
-          [
-              _Ty=S2D::Input::Keys
-          ]
-  C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): note: see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
-          with
-          [
-              _Ty=S2D::Input::Keys
-          ]
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(56): warning C4154: deletion of an array expression; conversion to pointer supplied
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(264): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(282): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(286): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  Pacman.vcxproj -> C:\Users\n020868i\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Debug\Pacman.exe
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>::_Mypair': class 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:             _Ty=S2D::Input::Keys
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message : see declaration of 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :             _Ty=S2D::Input::Keys
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         ]
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         with
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         [
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :             _Ty=S2D::Input::Keys
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         ]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(34,1): error C2504: 'GdiplusBase': base class undefined
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(39,33): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(39,26): error C2143: syntax error: missing ',' before '&'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(41,40): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(41,33): error C2143: syntax error: missing ',' before '*'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(41,40): error C2535: 'Region::Region(const int)': member function already defined or declared
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(39): message : see declaration of 'Region::Region'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(49,24): error C3646: 'MakeInfinite': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(49,24): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(49,26): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(50,21): error C3646: 'MakeEmpty': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(50,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(50,23): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(59,19): error C3646: 'GetData': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(59,19): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(61,60): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(63,21): error C3646: 'Intersect': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(63,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(63,42): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(64,21): error C3646: 'Intersect': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(64,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(64,43): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(65,21): error C3646: 'Intersect': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(65,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(65,50): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(66,21): error C3646: 'Intersect': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(66,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(66,46): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(67,17): error C3646: 'Union': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(67,17): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(67,38): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(68,17): error C3646: 'Union': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(68,17): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(68,39): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(69,17): error C3646: 'Union': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(69,17): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(69,46): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(70,17): error C3646: 'Union': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(70,17): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(70,42): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(71,15): error C3646: 'Xor': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(71,15): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(71,36): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(72,15): error C3646: 'Xor': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(72,15): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(72,37): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(73,15): error C3646: 'Xor': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(73,15): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(73,44): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(74,15): error C3646: 'Xor': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(74,15): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(74,40): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(75,19): error C3646: 'Exclude': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(75,19): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(75,40): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(76,19): error C3646: 'Exclude': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(76,19): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(76,41): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(77,19): error C3646: 'Exclude': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(77,19): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(77,48): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(78,19): error C3646: 'Exclude': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(78,19): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(78,44): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(79,22): error C3646: 'Complement': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(79,22): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(79,43): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(80,22): error C3646: 'Complement': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(80,22): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(80,44): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(81,22): error C3646: 'Complement': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(81,22): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(81,51): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(82,22): error C3646: 'Complement': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(82,22): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(82,47): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(83,21): error C3646: 'Translate': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(83,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(84,33): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(85,21): error C3646: 'Translate': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(85,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(86,32): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(87,21): error C3646: 'Transform': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(87,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(87,46): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(89,21): error C3646: 'GetBounds': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(89,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(90,49): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(92,21): error C3646: 'GetBounds': unknown override specifier
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(92,21): error C2059: syntax error: '('
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(93,49): error C2238: unexpected token(s) preceding ';'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(95,40): error C2872: 'Graphics': ambiguous symbol
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(36,18): message : could be 'Graphics'
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Graphics.h(28,12): message : or       'S2D::Graphics'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(97,36): error C2872: 'Graphics': ambiguous symbol
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(36,18): message : could be 'Graphics'
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Graphics.h(28,12): message : or       'S2D::Graphics'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(98,39): error C2872: 'Graphics': ambiguous symbol
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(36,18): message : could be 'Graphics'
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Graphics.h(28,12): message : or       'S2D::Graphics'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(102,37): error C2872: 'Graphics': ambiguous symbol
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(36,18): message : could be 'Graphics'
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Graphics.h(28,12): message : or       'S2D::Graphics'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(107,34): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(107,34): error C2143: syntax error: missing ',' before '&'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(110,28): error C2061: syntax error: identifier 'REAL'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(117,35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(117,35): error C2143: syntax error: missing ',' before '&'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(118,54): error C2535: 'BOOL Region::IsVisible(const int) const': member function already defined or declared
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(107): message : see declaration of 'Region::IsVisible'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(124,37): error C2872: 'Graphics': ambiguous symbol
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(36,18): message : could be 'Graphics'
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Graphics.h(28,12): message : or       'S2D::Graphics'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(130,37): error C2872: 'Graphics': ambiguous symbol
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(36,18): message : could be 'Graphics'
+C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Graphics.h(28,12): message : or       'S2D::Graphics'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(132,28): error C2061: syntax error: identifier 'REAL'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(137,5): error C2535: 'BOOL Region::IsVisible(void) const': member function already defined or declared
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(110): message : see declaration of 'Region::IsVisible'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(141,34): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(141,34): error C2143: syntax error: missing ',' before '&'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\gdiplusheaders.h(141,34): fatal error C1003: error count exceeds 100; stopping compilation

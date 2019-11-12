@@ -29,7 +29,7 @@ struct Player {
 };
 
 // Munchie Struct Definition
-struct Munchie {
+struct Food {
 	Rect* rect;
 	Texture2D* texture;
 	Vector2* position;
@@ -45,6 +45,11 @@ struct Menu {
 	bool isKeyDown;
 };
 
+struct Map
+{
+	Texture2D* Texture;
+};
+
 // Declares the Pacman class which inherits from the Game class.
 // This allows us to overload the Game class methods to help us
 // load content, draw and update our game.
@@ -56,14 +61,18 @@ private:
 	Player* _pacman;
 	const int _cPacmanFrameTime;
 
-	// Data to represent Munchie
-	Munchie* _munchies[MUNCHIECOUNT];
+	// Data to represent Food
+	Food* _munchies[MUNCHIECOUNT];
+	Food* _cherry;
 
 	// Data to represent menu
 	Menu* _menu;
 
-	// Position for String
-	Vector2* _stringPosition;
+	Map* _map;
+
+	// score
+	int _curScore;
+	Vector2* _scorePosition;
 
 	// Constant data for Game Variables
 	const float _cPacmanSpeed;
@@ -73,12 +82,16 @@ private:
 	bool _gameStarted;
 
 	// Define Functions
+	bool CheckBoxCollision(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
 	void CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey);
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
 	void CheckViewportCollision();
-	void Input(int elapsedTime, Input::KeyboardState* state);
-	void UpdateMunchie(int elapsedTime);
-	void UpdatePacman(int elapsedTime);
+	void GenerateLevel();
+	void GenerateTile(int x, int y);
+	void Input(Input::KeyboardState* state);
+	void MovePacman(int elapsedTime);
+	void UpdateMunchieSprite(int elapsedTime);
+	void UpdatePacmanSprite(int elapsedTime);
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
