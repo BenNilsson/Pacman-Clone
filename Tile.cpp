@@ -1,17 +1,24 @@
 #include "Tile.h"
 
-const int Tile::Width = 32;
-const int Tile::Height = 32;
-
-const Vector2* Tile::Size = new Vector2((float)Width, (float)Height);
-
-Tile::Tile(Texture2D* texture, TileCollision collision)
+Tile::Tile(int _x, int _y, Texture2D* _texture, TileType _Type)
 {
-	Texture = texture;
-	Collision = collision;
+	X = _x;
+	Y = _y;
+	Type = _Type;
+	Texture = _texture;
 }
 
-Tile::~Tile(void)
+Texture2D* Tile::GetTexture()
 {
-	delete Texture;
+	return nullptr;
+}
+
+int Tile::GetX()
+{
+	return X;
+}
+
+int Tile::GetY()
+{
+	return Y;
 }

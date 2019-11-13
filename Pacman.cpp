@@ -11,8 +11,6 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_pacman->currentFrameTime = 0;
 	_pacman->frame = 0;
 
-	_map = new Map();
-
 	// Initialise Munchies
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
@@ -31,7 +29,6 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	// Initiase Game Stats
 	_gameStarted = false;
 	_paused = false;
-
 
 	//Initialise important Game aspects
 	S2D::Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "Pacman", 144);
@@ -64,8 +61,6 @@ Pacman::~Pacman()
 
 	// Clean up menu
 	delete _menu;
-
-	delete _map;
 }
 
 void Pacman::LoadContent()
@@ -100,14 +95,8 @@ void Pacman::LoadContent()
 	_curScore = 0;
 	_scorePosition = new Vector2(10.0f, 25.0f);
 
-	// Level
-	
-	_map->Texture = new Texture2D();
-	_map->Texture->Load("Textures/map.bmp", false);
-
 	GenerateLevel();
-	
-	// figure out how to read every pixel's colour value, for loop width and nested height, place tile based on colour from image?
+
 }
 
 void Pacman::Update(int elapsedTime)
@@ -170,13 +159,22 @@ void Pacman::Draw(int elapsedTime)
 
 	// Start Drawing
 	SpriteBatch::BeginDraw();
+	
+	// Draw Tiles
+	for (Tile& tiles : _tiles)
+	{
+		Vector2 position = Vector2(tiles.GetX(), tiles.GetY());
+		SpriteBatch::Draw(tiles.GetTexture(), &position);
+	}
+	
 
-
+	
 	// Draw Munchies
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
 		SpriteBatch::Draw(_munchies[i]->texture, _munchies[i]->position, _munchies[i]->rect);
 	}
+	
 
 	SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
 
@@ -278,18 +276,62 @@ void Pacman::CheckViewportCollision()
 
 void Pacman::GenerateLevel()
 {
-	for (int x = 0; x < _map->Texture->GetWidth(); x++)
+	// Load pixels from SOIL to get channels.
+	// Unsure if Texture2D stores channels anywhere, can't seem to find it so I am re-loading the image
+	int width, height, channels;
+	unsigned char* myImage = SOIL_load_image
+	(
+		"Textures/map.png",
+		&width, &height, &channels,
+		SOIL_LOAD_AUTO
+	);
+
+	_tiles = vector<Tile>(width * height);
+
+	// Loop through the image
+	for (int x = 0; x < width; x++)
 	{
-		for (int y = 0; y < _map->Texture->GetHeight(); y++)
+		for (int y = 0; y < height; y++)
 		{
-			GenerateTile(x, y);
+			// Get pixelindex
+			int pixelIndex = x + y * width;
+
+			// Get HEX value from pixelindex
+			int pixelColour = myImage[pixelIndex];
+
+			// Test for colours
+			// Check to see if image supports alpha, if so use HEX values of RRGGBBAA
+			// All hex values which include alpha must go under here
+			if (channels == 4) {
+
+				if ((pixelColour & 0xFF) == 0)
+				{
+					// pixel is transparent
+					_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
+				}
+
+				if (pixelColour == 0x00000000)
+				{
+					// Tile is black
+					Texture2D* wall = new Texture2D();
+					wall->Load("Textures/wall.png", false);
+					_tiles.push_back(Tile(x, y, wall, TileType::TILE_SOLID));
+				}
+
+				
+				if (pixelColour == 0x00d70000)
+				{
+					// Create new munchie, store in dynamic array, draw later
+					_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
+				}
+				
+			}
+			
 		}
 	}
-}
 
-void Pacman::GenerateTile(int x, int y)
-{
-	
+	// Free up ram
+	SOIL_free_image_data(myImage);
 }
 
 void Pacman::Input(Input::KeyboardState* state)

@@ -4,22 +4,27 @@
 
 using namespace S2D;
 
-enum class TileCollision
+enum class TileType
 {
-	Passable = 0,
-	Impassable = 1
+	TILE_WALKABLE,
+	TILE_SOLID
 };
 
-struct Tile
+class Tile
 {
+public:
+	Tile(int _x, int _y, Texture2D* _texture, TileType _Type);
+
+	TileType Type;
+
+	Texture2D* GetTexture();
+	int GetX();
+	int GetY();
+
+private:
+	int X, Y;
+	const int Width = 32;
+	const int Height = 32;
 	Texture2D* Texture;
-	TileCollision Collision;
 
-	static const int Width;
-	static const int Height;
-
-	static const Vector2* Size;
-
-	Tile(Texture2D* texture, TileCollision collision);
-	~Tile(void);
 };

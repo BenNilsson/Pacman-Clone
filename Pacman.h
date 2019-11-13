@@ -13,6 +13,7 @@
 
 // Just need to include main header file
 #include "S2D/S2D.h"
+#include "Tile.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -45,10 +46,6 @@ struct Menu {
 	bool isKeyDown;
 };
 
-struct Map
-{
-	Texture2D* Texture;
-};
 
 // Declares the Pacman class which inherits from the Game class.
 // This allows us to overload the Game class methods to help us
@@ -68,7 +65,7 @@ private:
 	// Data to represent menu
 	Menu* _menu;
 
-	Map* _map;
+	vector<Tile> _tiles;
 
 	// score
 	int _curScore;
@@ -87,7 +84,6 @@ private:
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
 	void CheckViewportCollision();
 	void GenerateLevel();
-	void GenerateTile(int x, int y);
 	void Input(Input::KeyboardState* state);
 	void MovePacman(int elapsedTime);
 	void UpdateMunchieSprite(int elapsedTime);
