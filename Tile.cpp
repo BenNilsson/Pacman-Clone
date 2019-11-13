@@ -8,17 +8,17 @@ Tile::Tile(int _x, int _y, Texture2D* _texture, TileType _Type)
 	Texture = _texture;
 }
 
-Texture2D* Tile::GetTexture()
+Texture2D* Tile::GetTexture() const
 {
 	return nullptr;
 }
 
-int Tile::GetX()
+int Tile::GetX() const
 {
 	return X;
 }
 
-int Tile::GetY()
+int Tile::GetY() const
 {
 	return Y;
 }

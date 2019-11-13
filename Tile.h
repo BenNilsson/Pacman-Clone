@@ -17,9 +17,9 @@ public:
 
 	TileType Type;
 
-	Texture2D* GetTexture();
-	int GetX();
-	int GetY();
+	Texture2D* GetTexture() const;
+	int GetX() const;
+	int GetY() const;
 
 private:
 	int X, Y;

@@ -168,7 +168,6 @@ void Pacman::Draw(int elapsedTime)
 	}
 	
 
-	
 	// Draw Munchies
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
