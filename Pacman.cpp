@@ -161,10 +161,11 @@ void Pacman::Draw(int elapsedTime)
 	SpriteBatch::BeginDraw();
 	
 	// Draw Tiles
-	for (Tile& tiles : _tiles)
+	for (const Tile& tile : _tiles)
 	{
-		Vector2 position = Vector2(tiles.GetX(), tiles.GetY());
-		SpriteBatch::Draw(tiles.GetTexture(), &position);
+		const Texture2D* texture = tile.GetTexture();
+		if (texture != nullptr)
+			SpriteBatch::Draw(texture, &tile.GetPosition());
 	}
 	
 
@@ -258,19 +259,19 @@ void Pacman::CheckViewportCollision()
 {
 	// Checks if Pacman is off the right side of the screen
 	if (_pacman->position->X + _pacman->sourceRect->Width > Graphics::GetViewportWidth())
-		_pacman->position->X = 0.0f + (float)_pacman->sourceRect->Width;
+		_pacman->position->X = 0.0f + _pacman->sourceRect->Width;
 
 	// Checks if Pacman is off the left side of the screen
 	if (_pacman->position->X - _pacman->sourceRect->Width < 0.0f)
-		_pacman->position->X = Graphics::GetViewportWidth() - (float)_pacman->sourceRect->Width;
+		_pacman->position->X = Graphics::GetViewportWidth() - _pacman->sourceRect->Width;
 
 	// Checks if Pacman is off the top side of the screen
 	if (_pacman->position->Y - _pacman->sourceRect->Height < 0.0f)
-		_pacman->position->Y = Graphics::GetViewportHeight() - (float)_pacman->sourceRect->Height;
+		_pacman->position->Y = Graphics::GetViewportHeight() - _pacman->sourceRect->Height;
 
 	// Checks if Pacman is off the down side of the screen
 	if (_pacman->position->Y + _pacman->sourceRect->Height > Graphics::GetViewportHeight())
-		_pacman->position->Y = 0.0f + (float)_pacman->sourceRect->Height;
+		_pacman->position->Y = 0.0f + _pacman->sourceRect->Height;
 }
 
 void Pacman::GenerateLevel()
@@ -285,7 +286,10 @@ void Pacman::GenerateLevel()
 		SOIL_LOAD_AUTO
 	);
 
-	_tiles = vector<Tile>(width * height);
+	// Generate dynamic array for the tiles
+	_tiles = vector<Tile>();
+	// Reserve the size to avoid the array constantly upping its size
+	_tiles.reserve(width * height);
 
 	// Loop through the image
 	for (int x = 0; x < width; x++)
@@ -297,7 +301,9 @@ void Pacman::GenerateLevel()
 
 			// Get HEX value from pixelindex
 			int pixelColour = myImage[pixelIndex];
-
+			int i = 0;
+			cout << i << " : " << pixelColour << endl;
+			i++;
 			// Test for colours
 			// Check to see if image supports alpha, if so use HEX values of RRGGBBAA
 			// All hex values which include alpha must go under here

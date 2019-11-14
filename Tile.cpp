@@ -2,23 +2,17 @@
 
 Tile::Tile(int _x, int _y, Texture2D* _texture, TileType _Type)
 {
-	X = _x;
-	Y = _y;
 	Type = _Type;
 	Texture = _texture;
+	Position = Vector2(_x * Width, _y * Height);
 }
 
-Texture2D* Tile::GetTexture() const
+const Vector2& Tile::GetPosition() const
 {
-	return nullptr;
+	return Position;
 }
 
-int Tile::GetX() const
+const Texture2D* Tile::GetTexture() const
 {
-	return X;
-}
-
-int Tile::GetY() const
-{
-	return Y;
+	return Texture;
 }
