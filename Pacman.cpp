@@ -10,18 +10,21 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_pacman->direction = 0;
 	_pacman->currentFrameTime = 0;
 	_pacman->frame = 0;
+	_pacman->speedMultiplier = 1.0f;
 
+	
 	// Initialise Munchies
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
-		_munchies[i] = new Food();
+		_munchies[i] = new Munchie();
 		_munchies[i]->frameCount = 0;
 		_munchies[i]->currentFrameTime = 0;
 		_munchies[i]->frameCount = rand() % 1;
 		_munchies[i]->frameTime = rand() % 500 + 100;
 	}
+	
 
-	_cherry = new Food();
+	_cherry = new Munchie();
 
 	// Menu
 	_menu = new Menu();
@@ -169,11 +172,13 @@ void Pacman::Draw(int elapsedTime)
 	}
 	
 
+	/*
 	// Draw Munchies
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
 		SpriteBatch::Draw(_munchies[i]->texture, _munchies[i]->position, _munchies[i]->rect);
 	}
+	*/
 	
 
 	SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
@@ -258,20 +263,20 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 void Pacman::CheckViewportCollision()
 {
 	// Checks if Pacman is off the right side of the screen
-	if (_pacman->position->X + _pacman->sourceRect->Width > Graphics::GetViewportWidth())
-		_pacman->position->X = 0.0f + _pacman->sourceRect->Width;
+	if (_pacman->position->X + _pacman->sourceRect->Width > _width)
+		_pacman->position->X = (float)(0 - 32) + _pacman->sourceRect->Width;
 
 	// Checks if Pacman is off the left side of the screen
-	if (_pacman->position->X - _pacman->sourceRect->Width < 0.0f)
-		_pacman->position->X = Graphics::GetViewportWidth() - _pacman->sourceRect->Width;
+	if (_pacman->position->X - _pacman->sourceRect->Width < (float)(0 - 32))
+		_pacman->position->X = _width - _pacman->sourceRect->Width;
 
 	// Checks if Pacman is off the top side of the screen
-	if (_pacman->position->Y - _pacman->sourceRect->Height < 0.0f)
-		_pacman->position->Y = Graphics::GetViewportHeight() - _pacman->sourceRect->Height;
+	if (_pacman->position->Y - _pacman->sourceRect->Height < (float)(0 - 32))
+		_pacman->position->Y = _height - _pacman->sourceRect->Height;
 
 	// Checks if Pacman is off the down side of the screen
-	if (_pacman->position->Y + _pacman->sourceRect->Height > Graphics::GetViewportHeight())
-		_pacman->position->Y = 0.0f + _pacman->sourceRect->Height;
+	if (_pacman->position->Y + _pacman->sourceRect->Height > _height)
+		_pacman->position->Y = (float)(0 - 32) + _pacman->sourceRect->Height;
 }
 
 void Pacman::GenerateLevel()
@@ -286,8 +291,14 @@ void Pacman::GenerateLevel()
 		SOIL_LOAD_AUTO
 	);
 
+	// Cache width and height for later use
+	_width = width * 32;
+	_height = height * 32;
+
 	// Generate dynamic array for the tiles
 	_tiles = vector<Tile>();
+	// Generate dynamic array for munchies
+	_test = vector<Food>();
 	// Reserve the size to avoid the array constantly upping its size
 	_tiles.reserve(width * height);
 
@@ -306,12 +317,18 @@ void Pacman::GenerateLevel()
 			if (channels == 4)
 				alpha = myImage[pixelIndex + 3];
 
-			if (red == 0 && blue == 0 && green == 0 && alpha == 255)
+			if (red == 0 && green == 0 && blue == 0 && alpha == 255)
 			{
 				// Tile is black
 				Texture2D* wall = new Texture2D();
 				wall->Load("Textures/wall.png", false);
 				_tiles.push_back(Tile(x, y, wall, TileType::TILE_SOLID));
+			}
+
+			if (red == 200 && green == 200 && blue == 40 && alpha == 255)
+			{
+				// Munchie
+				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
 			}
 
 			if (alpha == 0)
@@ -349,20 +366,22 @@ void Pacman::Input(Input::KeyboardState* state)
 
 void Pacman::MovePacman(int elapsedTime)
 {
+	float pacmanSpeed = _cPacmanSpeed * elapsedTime * _pacman->speedMultiplier;
+
 	// Move pacman in the direction of him facing
 	switch (_pacman->direction)
 	{
 	case 0:
-		_pacman->position->X += _cPacmanSpeed * elapsedTime;
+		_pacman->position->X += pacmanSpeed;
 		break;
 	case 1:
-		_pacman->position->Y += _cPacmanSpeed * elapsedTime;
+		_pacman->position->Y += pacmanSpeed;
 		break;
 	case 2:
-		_pacman->position->X -= _cPacmanSpeed * elapsedTime;
+		_pacman->position->X -= pacmanSpeed;
 		break;
 	case 3:
-		_pacman->position->Y -= _cPacmanSpeed * elapsedTime;
+		_pacman->position->Y -= pacmanSpeed;
 		break;
 	}
 }

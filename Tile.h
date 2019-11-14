@@ -17,13 +17,14 @@ public:
 
 	TileType Type;
 
+	static const int Width = 32;
+	static const int Height = 32;
+
 	const Vector2& GetPosition() const;
 	const Texture2D* GetTexture() const;
 
 private:
 	Vector2 Position;
-	const int Width = 32;
-	const int Height = 32;
 	Texture2D* Texture;
 
 };

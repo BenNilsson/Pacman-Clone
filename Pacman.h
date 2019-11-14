@@ -14,6 +14,7 @@
 // Just need to include main header file
 #include "S2D/S2D.h"
 #include "Tile.h"
+#include "Food.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -27,10 +28,11 @@ struct Player {
 	int direction;
 	int frame;
 	int currentFrameTime;
+	float speedMultiplier;
 };
 
 // Munchie Struct Definition
-struct Food {
+struct Munchie {
 	Rect* rect;
 	Texture2D* texture;
 	Vector2* position;
@@ -59,13 +61,17 @@ private:
 	const int _cPacmanFrameTime;
 
 	// Data to represent Food
-	Food* _munchies[MUNCHIECOUNT];
-	Food* _cherry;
+	Munchie* _munchies[MUNCHIECOUNT];
+	Munchie* _cherry;
 
 	// Data to represent menu
 	Menu* _menu;
 
+	// Data to represent creating the level
 	vector<Tile> _tiles;
+	vector<Food> _test;
+	int _width;
+	int _height;
 
 	// score
 	int _curScore;
