@@ -296,42 +296,28 @@ void Pacman::GenerateLevel()
 	{
 		for (int y = 0; y < height; y++)
 		{
-			// Get pixelindex
-			int pixelIndex = x + y * width;
+			int pixelIndex = x * channels + y * width * channels;
 
-			// Get HEX value from pixelindex
-			int pixelColour = myImage[pixelIndex];
-			int i = 0;
-			cout << i << " : " << pixelColour << endl;
-			i++;
-			// Test for colours
-			// Check to see if image supports alpha, if so use HEX values of RRGGBBAA
-			// All hex values which include alpha must go under here
-			if (channels == 4) {
+			unsigned char red = myImage[pixelIndex];
+			unsigned char green = myImage[pixelIndex + 1];
+			unsigned char blue = myImage[pixelIndex + 2];
+			unsigned char alpha = 255;
 
-				if ((pixelColour & 0xFF) == 0)
-				{
-					// pixel is transparent
-					_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
-				}
+			if (channels == 4)
+				alpha = myImage[pixelIndex + 3];
 
-				if (pixelColour == 0x00000000)
-				{
-					// Tile is black
-					Texture2D* wall = new Texture2D();
-					wall->Load("Textures/wall.png", false);
-					_tiles.push_back(Tile(x, y, wall, TileType::TILE_SOLID));
-				}
-
-				
-				if (pixelColour == 0x00d70000)
-				{
-					// Create new munchie, store in dynamic array, draw later
-					_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
-				}
-				
+			if (red == 0 && blue == 0 && green == 0 && alpha == 255)
+			{
+				// Tile is black
+				Texture2D* wall = new Texture2D();
+				wall->Load("Textures/wall.png", false);
+				_tiles.push_back(Tile(x, y, wall, TileType::TILE_SOLID));
 			}
-			
+
+			if (alpha == 0)
+			{
+				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
+			}			
 		}
 	}
 

@@ -9,87 +9,30 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         [
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :             _Ty=S2D::Input::Keys
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         ]
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         with
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         [
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :             _Ty=S2D::Input::Keys
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         ]
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(58,20): warning C4154: deletion of an array expression; conversion to pointer supplied
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(86,91): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(86,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(120,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(120,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(119,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(119,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(131,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(131,21): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(130,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(130,21): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(166,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(166,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(397,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(415,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.cpp(419,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(758,82): error C2512: 'Tile::Tile': no appropriate default constructor available
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message : see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,>(_Alloc &,_Objty *const )' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :             _Alloc=std::allocator<Tile>,
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :             _Ty=Tile,
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :             _Objty=Tile
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message : see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,>(_Alloc &,_Objty *const )' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :             _Alloc=std::allocator<Tile>,
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :             _Ty=Tile,
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :             _Objty=Tile
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1581): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message : see reference to function template instantiation 'void std::_Uninitialized_backout_al<_Alloc>::_Emplace_back<>(void)' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :             _Alloc=std::allocator<Tile>
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message : see reference to function template instantiation 'void std::_Uninitialized_backout_al<_Alloc>::_Emplace_back<>(void)' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :             _Alloc=std::allocator<Tile>
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(1919): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1539): message : see reference to function template instantiation 'Tile *std::_Uninitialized_value_construct_n<std::allocator<_Ty>>(Tile *,unsigned int,_Alloc &)' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1539): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1539): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1539): message :             _Ty=Tile,
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1539): message :             _Alloc=std::allocator<Tile>
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1539): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1537): message : while compiling class template member function 'Tile *std::vector<Tile,std::allocator<_Ty>>::_Ufill(Tile *,const unsigned int,std::_Value_init_tag)'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1537): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1537): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1537): message :             _Ty=Tile
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1537): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(404): message : see reference to function template instantiation 'Tile *std::vector<Tile,std::allocator<_Ty>>::_Ufill(Tile *,const unsigned int,std::_Value_init_tag)' being compiled
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(404): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(404): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(404): message :             _Ty=Tile
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(404): message :         ]
-  Tile.cpp
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.h(68): message : see reference to class template instantiation 'std::vector<Tile,std::allocator<_Ty>>' being compiled
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.h(68): message :         with
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.h(68): message :         [
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.h(68): message :             _Ty=Tile
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\Pacman.h(68): message :         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>::_Mypair': class 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:             _Ty=S2D::Input::Keys
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706,1): warning C4251:         ]
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message : see declaration of 'std::_Compressed_pair<std::allocator<_Ty>,std::_Vector_val<std::_Simple_types<_Ty>>,true>'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :             _Ty=S2D::Input::Keys
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(1706): message :         ]
-  Generating Code...
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         with
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         [
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :             _Ty=S2D::Input::Keys
-C:\Users\krota\OneDrive - Staffordshire University\Game and Graphical System Development\Assesments\Pacman\Pacman\Pacman\S2D\Input.h(108): message :         ]
+C:\Users\krota\Desktop\pacman\S2D\Input.h(108): message : see reference to class template instantiation 'std::vector<S2D::Input::Keys,std::allocator<_Ty>>' being compiled
+C:\Users\krota\Desktop\pacman\S2D\Input.h(108): message :         with
+C:\Users\krota\Desktop\pacman\S2D\Input.h(108): message :         [
+C:\Users\krota\Desktop\pacman\S2D\Input.h(108): message :             _Ty=S2D::Input::Keys
+C:\Users\krota\Desktop\pacman\S2D\Input.h(108): message :         ]
+C:\Users\krota\Desktop\pacman\Pacman.cpp(58,20): warning C4154: deletion of an array expression; conversion to pointer supplied
+C:\Users\krota\Desktop\pacman\Pacman.cpp(86,91): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(86,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(120,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(120,27): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(119,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(119,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(131,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(131,21): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(130,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(130,21): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(266,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(270,56): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(430,53): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(448,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\krota\Desktop\pacman\Pacman.cpp(452,55): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  SOIL.lib(SOIL.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  Finished generating code
+  Pacman.vcxproj -> C:\Users\krota\Desktop\pacman\Debug\Pacman.exe
