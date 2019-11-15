@@ -58,8 +58,8 @@ void Pacman::LoadContent()
 	// Load Pacman
 	_pacman->texture = new Texture2D();
 	_pacman->texture->Load("Textures/Pacman.tga", false);
-	_pacman->position = new Vector2(350.0f, 350.0f);
 	_pacman->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	_pacman->position = new Vector2(0, 0);
 
 	_cherry->texture = new Texture2D();
 	_cherry->texture->Load("Textures/Cherry.png", false);
@@ -105,7 +105,9 @@ void Pacman::Update(int elapsedTime)
 			_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Width,
 			_cherry->position->X, _cherry->position->Y, _cherry->rect->Width, _cherry->rect->Width))
 		{
-			// they collision
+			// Collision detected
+			
+			// Update score
 			_curScore += 200;
 			// Move Cherry out of the screen bounds
 			_cherry->position = new Vector2(-100, -100);
@@ -294,6 +296,13 @@ void Pacman::GenerateLevel()
 				_tiles.push_back(Tile(x, y, wall, TileType::TILE_SOLID));
 			}
 
+			// Pacman
+			if (red == 0 && green == 255 && blue == 0 && alpha == 255)
+			{
+				_tiles.push_back(LoadPlayerStartTile(x, y));
+			}
+
+			// Munchie
 			if (red == 200 && green == 200 && blue == 40 && alpha == 255)
 			{
 				_tiles.push_back(LoadMunchieTile(x, y));
@@ -401,10 +410,28 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	Rect r = Rect(0, 0, 12, 12);
 	Texture2D* t = new Texture2D();
 	t->Load("Textures/Munchie.png", false);
-	Vector2 v = Vector2(x * 32, y  * 32);
+	Vector2 v = Vector2((x * 32) + ((16 * 0.5f) + 2), (y * 32) + (16 - (t->GetHeight() * 0.5f)));
 	_test.push_back(Food(r, t, v));
 
 	// Return an empty tile
+	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
+}
+
+Tile Pacman::LoadPlayerStartTile(int x, int y)
+{
+	// Load Pacman
+	_pacman->position = new Vector2(x * 32, y * 32);
+
+	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
+}
+
+Tile Pacman::LoadCherryTile(int x, int y)
+{
+	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
+}
+
+Tile Pacman::LoadEnemyTile(int x, int y)
+{
 	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
 }
 

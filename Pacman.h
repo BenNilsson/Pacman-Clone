@@ -93,6 +93,9 @@ private:
 	void UpdatePacmanSprite(int elapsedTime);
 
 	Tile LoadMunchieTile(int x, int y);
+	Tile LoadPlayerStartTile(int x, int y);
+	Tile LoadCherryTile(int x, int y);
+	Tile LoadEnemyTile(int x, int y);
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>

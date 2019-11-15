@@ -1,5 +1,7 @@
 #include "Tile.h"
 
+const int Size = 32;
+
 Tile::Tile(int _x, int _y, Texture2D* _texture, TileType _Type)
 {
 	Type = _Type;
