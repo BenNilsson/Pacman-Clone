@@ -6,7 +6,7 @@ using namespace S2D;
 
 enum class TileType
 {
-	TILE_WALKABLE,
+	TILE_TRANSPARENT,
 	TILE_SOLID
 };
 

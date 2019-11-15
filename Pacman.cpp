@@ -12,17 +12,6 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_pacman->frame = 0;
 	_pacman->speedMultiplier = 1.0f;
 
-	
-	// Initialise Munchies
-	for (int i = 0; i < MUNCHIECOUNT; i++)
-	{
-		_munchies[i] = new Munchie();
-		_munchies[i]->frameCount = 0;
-		_munchies[i]->currentFrameTime = 0;
-		_munchies[i]->frameCount = rand() % 1;
-		_munchies[i]->frameTime = rand() % 500 + 100;
-	}
-	
 
 	_cherry = new Munchie();
 
@@ -52,14 +41,6 @@ Pacman::~Pacman()
 	// Clean up the Pacman structure pointer
 	delete _pacman;
 
-	// Clean up munchie
-	for (int i = 0; i < MUNCHIECOUNT; i++)
-	{
-		delete _munchies[i]->texture;
-		delete _munchies[i]->rect;
-	}
-	delete[] _munchies;
-
 	delete _cherry;
 
 	// Clean up menu
@@ -79,15 +60,6 @@ void Pacman::LoadContent()
 	_pacman->texture->Load("Textures/Pacman.tga", false);
 	_pacman->position = new Vector2(350.0f, 350.0f);
 	_pacman->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
-
-	// Load Munchies
-	for (int i = 0; i < MUNCHIECOUNT; i++)
-	{
-		_munchies[i]->texture = new Texture2D();
-		_munchies[i]->texture->Load("Textures/Munchie.png", false);
-		_munchies[i]->rect = new Rect(0.0f, 0.0f, 12, 12);
-		_munchies[i]->position = new Vector2(rand() % S2D::Graphics::GetViewportWidth(), rand() % S2D::Graphics::GetViewportHeight());
-	}
 
 	_cherry->texture = new Texture2D();
 	_cherry->texture->Load("Textures/Cherry.png", false);
@@ -115,27 +87,27 @@ void Pacman::Update(int elapsedTime)
 		Input(keyboardState);
 		MovePacman(elapsedTime);
 
-		// Check if Pacman collides with Munchies
-		for (int i = 0; i < MUNCHIECOUNT; i++)
+		for (Food& food : _test)
 		{
 			if (CheckBoxCollision(
-				_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Width,
-				_munchies[i]->position->X, _munchies[i]->position->Y, _munchies[i]->rect->Width, _munchies[i]->rect->Width))
+				_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Height,
+				food.Position.X, food.Position.Y, food.Rect.Width, food.Rect.Width))
 			{
 				// they collision
-				_curScore++;
+				_curScore += 10;
 				// Move Munchie out of the screen bounds
-				_munchies[i]->position = new Vector2(-100, -100);
+				food.Position = Vector2(-100, -100);
 			}
 		}
 
+		// Cherry collision
 		if (CheckBoxCollision(
 			_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Width,
 			_cherry->position->X, _cherry->position->Y, _cherry->rect->Width, _cherry->rect->Width))
 		{
 			// they collision
-			_curScore += 10;
-			// Move Munchie out of the screen bounds
+			_curScore += 200;
+			// Move Cherry out of the screen bounds
 			_cherry->position = new Vector2(-100, -100);
 		}
 
@@ -171,14 +143,10 @@ void Pacman::Draw(int elapsedTime)
 			SpriteBatch::Draw(texture, &tile.GetPosition());
 	}
 	
-
-	/*
-	// Draw Munchies
-	for (int i = 0; i < MUNCHIECOUNT; i++)
+	for (const Food& food : _test)
 	{
-		SpriteBatch::Draw(_munchies[i]->texture, _munchies[i]->position, _munchies[i]->rect);
+		SpriteBatch::Draw(food.GetTexture(), &food.Position, &food.Rect);
 	}
-	*/
 	
 
 	SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
@@ -233,7 +201,6 @@ bool Pacman::CheckBoxCollision(int x1, int y1, int width1, int height1, int x2, 
 
 	return true;
 }
-
 
 void Pacman::CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey)
 {
@@ -297,8 +264,10 @@ void Pacman::GenerateLevel()
 
 	// Generate dynamic array for the tiles
 	_tiles = vector<Tile>();
+
 	// Generate dynamic array for munchies
 	_test = vector<Food>();
+
 	// Reserve the size to avoid the array constantly upping its size
 	_tiles.reserve(width * height);
 
@@ -327,13 +296,12 @@ void Pacman::GenerateLevel()
 
 			if (red == 200 && green == 200 && blue == 40 && alpha == 255)
 			{
-				// Munchie
-				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
+				_tiles.push_back(LoadMunchieTile(x, y));
 			}
 
 			if (alpha == 0)
 			{
-				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_WALKABLE));
+				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_TRANSPARENT));
 			}			
 		}
 	}
@@ -388,23 +356,21 @@ void Pacman::MovePacman(int elapsedTime)
 
 void Pacman::UpdateMunchieSprite(int elapsedTime)
 {
-
-	for (int i = 0; i < MUNCHIECOUNT; i++)
+	for (Food& food : _test)
 	{
-		// Update Munchies' frame time
-		_munchies[i]->currentFrameTime += elapsedTime;
+		food.CurrentFrameTime += elapsedTime;
 
-		if (_munchies[i]->currentFrameTime > _munchies[i]->frameTime) {
-			_munchies[i]->frameCount++;
+		if (food.CurrentFrameTime > food.GetFrameTime())
+		{
+			food.FrameCount++;
 
-			if (_munchies[i]->frameCount >= 2)
-				_munchies[i]->frameCount = 0;
+			if (food.FrameCount >= 2)
+				food.FrameCount = 0;
 
-			_munchies[i]->currentFrameTime = 0;
+			food.CurrentFrameTime = 0;
 		}
 
-		// Update Munchies' Source Rect
-		_munchies[i]->rect->X = _munchies[i]->rect->Width * _munchies[i]->frameCount;
+		food.Rect.X = food.Rect.Width * food.FrameCount;
 	}
 }
 
@@ -427,6 +393,19 @@ void Pacman::UpdatePacmanSprite(int elapsedTime)
 
 	// Set the Pacman source rect to match with the row of the spritesheet which pacman needs
 	_pacman->sourceRect->Y = _pacman->sourceRect->Height * _pacman->direction;
+}
+
+Tile Pacman::LoadMunchieTile(int x, int y)
+{
+	// Munchie
+	Rect r = Rect(0, 0, 12, 12);
+	Texture2D* t = new Texture2D();
+	t->Load("Textures/Munchie.png", false);
+	Vector2 v = Vector2(x * 32, y  * 32);
+	_test.push_back(Food(r, t, v));
+
+	// Return an empty tile
+	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
 }
 
 

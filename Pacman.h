@@ -8,8 +8,6 @@
 	#endif
 #endif
 
-// Munice count
-#define MUNCHIECOUNT 50
 
 // Just need to include main header file
 #include "S2D/S2D.h"
@@ -61,7 +59,6 @@ private:
 	const int _cPacmanFrameTime;
 
 	// Data to represent Food
-	Munchie* _munchies[MUNCHIECOUNT];
 	Munchie* _cherry;
 
 	// Data to represent menu
@@ -94,6 +91,8 @@ private:
 	void MovePacman(int elapsedTime);
 	void UpdateMunchieSprite(int elapsedTime);
 	void UpdatePacmanSprite(int elapsedTime);
+
+	Tile LoadMunchieTile(int x, int y);
 
 public:
 	/// <summary> Constructs the Pacman class. </summary>
