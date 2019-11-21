@@ -73,6 +73,9 @@ private:
 	int _width;
 	int _height;
 
+	// Sounds
+	SoundEffect* _pop;
+
 	// score
 	int _curScore;
 	Vector2* _scorePosition;

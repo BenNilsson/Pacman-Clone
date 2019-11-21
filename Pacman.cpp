@@ -16,6 +16,8 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 
 	_cherry = new Munchie();
 
+	_pop = new SoundEffect();
+
 	// Menu
 	_menu = new Menu();
 
@@ -24,6 +26,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_paused = false;
 
 	//Initialise important Game aspects
+	Audio::Initialise();
 	S2D::Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "Pacman", 144);
 	Input::Initialise();
 
@@ -45,13 +48,8 @@ Pacman::~Pacman()
 	delete _cherry->texture;
 	delete _cherry;
 
-	// Clean up Ghosts
-	for (Ghost& ghost : _ghosts)
-		delete ghost.GetTexture();
-
-	// Clean up munchies
-	for (Food& food : _munchiesVector)
-		delete food.GetTexture();
+	// Delete sounds
+	delete _pop;
 
 	// Clean up menu
 	delete _menu;
@@ -80,6 +78,17 @@ void Pacman::LoadContent()
 	_curScore = 0;
 	_scorePosition = new Vector2(10.0f, 25.0f);
 
+	// Load Sounds
+	_pop->Load("Sounds/pop.wav");
+
+	// Check if the audio is initialised
+	if (!Audio::IsInitialised())
+		std::cout << "Audio is not initialised" << std::endl;
+
+	// Checks if sounds aren't loaded
+	if (!_pop->IsLoaded()) 
+		std::cout << "_pop member sound effect has not loaded" << std::endl;
+
 	GenerateLevel();
 
 }
@@ -102,6 +111,7 @@ void Pacman::Update(int elapsedTime)
 			UpdatePacmanSprite(elapsedTime);
 		}
 
+		// Munchie collision
 		for (Food& food : _munchiesVector)
 		{
 			if (CheckBoxCollision(
@@ -110,6 +120,8 @@ void Pacman::Update(int elapsedTime)
 			{
 				// they collision
 				_curScore += 10;
+				// Play pop sound
+				Audio::Play(_pop);
 				// Move Munchie out of the screen bounds
 				food.Position = Vector2(-100, -100);
 			}
