@@ -7,6 +7,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 {
 	// Pacman
 	_pacman = new Player();
+	_pacman->isDead = false;
 	_pacman->direction = 0;
 	_pacman->currentFrameTime = 0;
 	_pacman->frame = 0;
@@ -41,7 +42,16 @@ Pacman::~Pacman()
 	// Clean up the Pacman structure pointer
 	delete _pacman;
 
+	delete _cherry->texture;
 	delete _cherry;
+
+	// Clean up Ghosts
+	for (Ghost& ghost : _ghosts)
+		delete ghost.GetTexture();
+
+	// Clean up munchies
+	for (Food& food : _munchiesVector)
+		delete food.GetTexture();
 
 	// Clean up menu
 	delete _menu;
@@ -84,10 +94,15 @@ void Pacman::Update(int elapsedTime)
 
 	if (!_paused && _gameStarted) {
 
-		Input(keyboardState);
-		MovePacman(elapsedTime);
+		if (!_pacman->isDead)
+		{
+			Input(keyboardState);
+			MovePacman(elapsedTime);
+			CheckViewportCollision();
+			UpdatePacmanSprite(elapsedTime);
+		}
 
-		for (Food& food : _test)
+		for (Food& food : _munchiesVector)
 		{
 			if (CheckBoxCollision(
 				_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Height,
@@ -113,9 +128,11 @@ void Pacman::Update(int elapsedTime)
 			_cherry->position = new Vector2(-100, -100);
 		}
 
-		UpdatePacmanSprite(elapsedTime);
 		UpdateMunchieSprite(elapsedTime);
-		CheckViewportCollision();
+
+		UpdateGhostPosition(elapsedTime);
+		CheckGhostCollisions();
+
 	}
 
 	// Check if game is started
@@ -145,16 +162,26 @@ void Pacman::Draw(int elapsedTime)
 			SpriteBatch::Draw(texture, &tile.GetPosition());
 	}
 	
-	for (const Food& food : _test)
+	// Draw munchies
+	for (const Food& food : _munchiesVector)
 	{
 		SpriteBatch::Draw(food.GetTexture(), &food.Position, &food.Rect);
+	}
+
+	// Draw ghosts
+	for (const Ghost& ghost : _ghosts)
+	{
+		SpriteBatch::Draw(ghost.GetTexture(), &ghost.Position, &ghost.Rect);
 	}
 	
 
 	SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
 
 	// Draw Player
-	SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
+	if (!_pacman->isDead)
+	{
+		SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
+	}
 
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _scorePosition, Color::White);
@@ -268,7 +295,7 @@ void Pacman::GenerateLevel()
 	_tiles = vector<Tile>();
 
 	// Generate dynamic array for munchies
-	_test = vector<Food>();
+	_munchiesVector = vector<Food>();
 
 	// Reserve the size to avoid the array constantly upping its size
 	_tiles.reserve(width * height);
@@ -308,6 +335,13 @@ void Pacman::GenerateLevel()
 				_tiles.push_back(LoadMunchieTile(x, y));
 			}
 
+			// Ghosts
+			if (red == 255 && green == 0 && blue == 0 && alpha == 255)
+			{
+				_tiles.push_back(LoadEnemyTile(x, y));
+			}
+
+			// Transparent
 			if (alpha == 0)
 			{
 				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_TRANSPARENT));
@@ -322,21 +356,21 @@ void Pacman::GenerateLevel()
 void Pacman::Input(Input::KeyboardState* state)
 {
 	// Checks if D key is pressed
-	if (state->IsKeyDown(Input::Keys::D)) {
+	if (state->IsKeyDown(Input::Keys::D) || state->IsKeyDown(Input::Keys::RIGHT)) {
 		_pacman->direction = 0;
 	}
 
 	// Checks if A key is pressed
-	else if (state->IsKeyDown(Input::Keys::A)) {
+	else if (state->IsKeyDown(Input::Keys::A) || state->IsKeyDown(Input::Keys::LEFT)) {
 		_pacman->direction = 2;
 	}
 	// Checks if W key is pressed
-	else if (state->IsKeyDown(Input::Keys::W)) {
+	else if (state->IsKeyDown(Input::Keys::W) || state->IsKeyDown(Input::Keys::UP)) {
 		_pacman->direction = 3;
 	}
 
 	// Checks if S key is pressed
-	else if (state->IsKeyDown(Input::Keys::S)) {
+	else if (state->IsKeyDown(Input::Keys::S) || state->IsKeyDown(Input::Keys::DOWN)) {
 		_pacman->direction = 1;
 	}
 }
@@ -365,7 +399,7 @@ void Pacman::MovePacman(int elapsedTime)
 
 void Pacman::UpdateMunchieSprite(int elapsedTime)
 {
-	for (Food& food : _test)
+	for (Food& food : _munchiesVector)
 	{
 		food.CurrentFrameTime += elapsedTime;
 
@@ -404,6 +438,62 @@ void Pacman::UpdatePacmanSprite(int elapsedTime)
 	_pacman->sourceRect->Y = _pacman->sourceRect->Height * _pacman->direction;
 }
 
+void Pacman::UpdateGhostPosition(int elapsedTime)
+{
+	for (Ghost& ghost : _ghosts)
+	{
+		if (ghost.Direction == 0)
+		{
+			// Moves Right
+			ghost.Position.X += ghost.Speed * elapsedTime;
+		}
+		else if (ghost.Direction == 1)
+		{
+			// Moves Left
+			ghost.Position.X -= ghost.Speed * elapsedTime;
+		}
+
+		if (ghost.Position.X + ghost.Rect.Width >= _width)
+		{
+			ghost.Direction = 1;
+		}
+		else if (ghost.Position.X <= 0)
+		{
+			ghost.Direction = 0;
+		}
+	}
+}
+
+void Pacman::CheckGhostCollisions()
+{
+	// Local Variables
+	int i = 0;
+	int bottom1 = _pacman->position->Y + _pacman->sourceRect->Height;
+	int bottom2 = 0;
+	int left1 = _pacman->position->X;
+	int left2 = 0;
+	int right1 = _pacman->position->X + _pacman->sourceRect->Width;
+	int right2 = 0;
+	int top1 = _pacman->position->Y;
+	int top2 = 0;
+
+	for (Ghost& ghost : _ghosts)
+	{
+		// Populate variables with ghost data
+		bottom2 = ghost.Position.Y + ghost.Rect.Height;
+		left2 = ghost.Position.X;
+		right2 = ghost.Position.X + ghost.Rect.Width;
+		top2 = ghost.Position.Y;
+
+		// Check for collision
+		if ((bottom1 > top2) && (top1 < bottom2) && (right1 > left2) && (left1 < right2))
+		{
+			// Collision detected
+			_pacman->isDead = true;
+		}
+	}
+}
+
 Tile Pacman::LoadMunchieTile(int x, int y)
 {
 	// Munchie
@@ -411,7 +501,7 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	Texture2D* t = new Texture2D();
 	t->Load("Textures/Munchie.png", false);
 	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + (16 - (r.Height * 0.5f)));
-	_test.push_back(Food(r, t, v));
+	_munchiesVector.push_back(Food(r, t, v));
 
 	// Return an empty tile
 	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
@@ -425,13 +515,16 @@ Tile Pacman::LoadPlayerStartTile(int x, int y)
 	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
 }
 
-Tile Pacman::LoadCherryTile(int x, int y)
-{
-	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
-}
-
 Tile Pacman::LoadEnemyTile(int x, int y)
 {
+	// Ghost
+	Rect r = Rect(0, 0, 20, 20);
+	Texture2D* t = new Texture2D();
+	t->Load("Textures/GhostBlue.png", false);
+	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + (16 - (r.Height * 0.5f)));
+	_ghosts.push_back(Ghost(r, t, v));
+
+	// Return empty tile
 	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
 }
 

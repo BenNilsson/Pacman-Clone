@@ -85,12 +85,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Food.cpp" />
+    <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Food.h" />
+    <ClInclude Include="Ghost.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>

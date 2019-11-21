@@ -13,6 +13,7 @@
 #include "S2D/S2D.h"
 #include "Tile.h"
 #include "Food.h"
+#include "Ghost.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -27,6 +28,7 @@ struct Player {
 	int frame;
 	int currentFrameTime;
 	float speedMultiplier;
+	bool isDead;
 };
 
 // Munchie Struct Definition
@@ -66,7 +68,8 @@ private:
 
 	// Data to represent creating the level
 	vector<Tile> _tiles;
-	vector<Food> _test;
+	vector<Food> _munchiesVector;
+	vector<Ghost> _ghosts;
 	int _width;
 	int _height;
 
@@ -91,10 +94,11 @@ private:
 	void MovePacman(int elapsedTime);
 	void UpdateMunchieSprite(int elapsedTime);
 	void UpdatePacmanSprite(int elapsedTime);
+	void UpdateGhostPosition(int elapsedTime);
+	void CheckGhostCollisions();
 
 	Tile LoadMunchieTile(int x, int y);
 	Tile LoadPlayerStartTile(int x, int y);
-	Tile LoadCherryTile(int x, int y);
 	Tile LoadEnemyTile(int x, int y);
 
 public:
