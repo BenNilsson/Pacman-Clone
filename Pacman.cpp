@@ -1,6 +1,8 @@
 #include "Pacman.h"
 #include <iostream>
-
+#include <chrono>
+#include <thread>
+#include <iomanip>
 #include <sstream>
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), _cPacmanFrameTime(250)
@@ -16,10 +18,13 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 
 	_cherry = new Munchie();
 
+	// Sounds
 	_pop = new SoundEffect();
+	_intro = new SoundEffect();
 
 	// Menu
-	_menu = new Menu();
+	_pauseMenu = new Menu();
+	_startMenu = new Menu();
 
 	// Initiase Game Stats
 	_gameStarted = false;
@@ -50,19 +55,15 @@ Pacman::~Pacman()
 
 	// Delete sounds
 	delete _pop;
+	delete _intro;
 
 	// Clean up menu
-	delete _menu;
+	delete _pauseMenu;
+	delete _startMenu;
 }
 
 void Pacman::LoadContent()
 {
-	// Set Menu Paramters
-	_menu->background = new Texture2D();
-	_menu->background->Load("Textures/Transparency.png", false);
-	_menu->rect = new Rect(0.0f, 0.0f, S2D::Graphics::GetViewportWidth(), S2D::Graphics::GetViewportHeight());
-	_menu->stringPosition = new Vector2(S2D::Graphics::GetViewportWidth() / 2.0f, S2D::Graphics::GetViewportHeight() / 2.0f);
-
 	// Load Pacman
 	_pacman->texture = new Texture2D();
 	_pacman->texture->Load("Textures/Pacman.tga", false);
@@ -78,8 +79,25 @@ void Pacman::LoadContent()
 	_curScore = 0;
 	_scorePosition = new Vector2(10.0f, 25.0f);
 
+	// Generate levels
+	GenerateLevel();
+
+	// Set Menu Paramters
+	_pauseMenu->background = new Texture2D();
+	_pauseMenu->background->Load("Textures/Transparency.png", false);
+	_pauseMenu->rect = new Rect(0.0f, 0.0f, _width, _height);
+	_pauseMenu->stringPosition = new Vector2(_width / 2.0f, _height / 2.0f);
+
+	// Set Menu Paramters
+	_startMenu->background = new Texture2D();
+	_startMenu->background->Load("Textures/Transparency.png", false);
+	_startMenu->rect = new Rect(0.0f, 0.0f, _width, _height);
+	_startMenu->stringPosition = new Vector2(_width / 2.0f, _height / 2.0f);
+	_startMenu->drawMenu = true;
+
 	// Load Sounds
-	_pop->Load("Sounds/pop.wav");
+	_pop->Load("Sounds/Chomp.wav");
+	_intro->Load("Sounds/Intro.wav");
 
 	// Check if the audio is initialised
 	if (!Audio::IsInitialised())
@@ -88,9 +106,6 @@ void Pacman::LoadContent()
 	// Checks if sounds aren't loaded
 	if (!_pop->IsLoaded()) 
 		std::cout << "_pop member sound effect has not loaded" << std::endl;
-
-	GenerateLevel();
-
 }
 
 void Pacman::Update(int elapsedTime)
@@ -109,42 +124,12 @@ void Pacman::Update(int elapsedTime)
 			MovePacman(elapsedTime);
 			CheckViewportCollision();
 			UpdatePacmanSprite(elapsedTime);
+			UpdateMunchieSprite(elapsedTime);
+			UpdateGhostPosition(elapsedTime);
+			CheckCherryCollisions();
+			CheckMunchieCollisions();
+			CheckGhostCollisions();
 		}
-
-		// Munchie collision
-		for (Food& food : _munchiesVector)
-		{
-			if (CheckBoxCollision(
-				_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Height,
-				food.Position.X, food.Position.Y, food.Rect.Width, food.Rect.Width))
-			{
-				// they collision
-				_curScore += 10;
-				// Play pop sound
-				Audio::Play(_pop);
-				// Move Munchie out of the screen bounds
-				food.Position = Vector2(-100, -100);
-			}
-		}
-
-		// Cherry collision
-		if (CheckBoxCollision(
-			_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Width,
-			_cherry->position->X, _cherry->position->Y, _cherry->rect->Width, _cherry->rect->Width))
-		{
-			// Collision detected
-			
-			// Update score
-			_curScore += 200;
-			// Move Cherry out of the screen bounds
-			_cherry->position = new Vector2(-100, -100);
-		}
-
-		UpdateMunchieSprite(elapsedTime);
-
-		UpdateGhostPosition(elapsedTime);
-		CheckGhostCollisions();
-
 	}
 
 	// Check if game is started
@@ -153,8 +138,6 @@ void Pacman::Update(int elapsedTime)
 	// Close Game
 	if (keyboardState->IsKeyDown(Input::Keys::ESCAPE))
 		exit(0);
-
-	
 }
 
 void Pacman::Draw(int elapsedTime)
@@ -166,57 +149,63 @@ void Pacman::Draw(int elapsedTime)
 	// Start Drawing
 	SpriteBatch::BeginDraw();
 	
-	// Draw Tiles
-	for (const Tile& tile : _tiles)
+	if (_drawLevel)
 	{
-		const Texture2D* texture = tile.GetTexture();
-		if (texture != nullptr)
-			SpriteBatch::Draw(texture, &tile.GetPosition());
-	}
-	
-	// Draw munchies
-	for (const Food& food : _munchiesVector)
-	{
-		SpriteBatch::Draw(food.GetTexture(), &food.Position, &food.Rect);
-	}
+		// Draw Tiles
+		for (const Tile& tile : _tiles)
+		{
+			const Texture2D* texture = tile.GetTexture();
+			if (texture != nullptr)
+				SpriteBatch::Draw(texture, &tile.GetPosition());
+		}
 
-	// Draw ghosts
-	for (const Ghost& ghost : _ghosts)
-	{
-		SpriteBatch::Draw(ghost.GetTexture(), &ghost.Position, &ghost.Rect);
+		// Draw munchies
+		for (const Food& food : _munchiesVector)
+		{
+			SpriteBatch::Draw(food.GetTexture(), &food.Position, &food.Rect);
+		}
+
+		// Draw ghosts
+		for (const Ghost& ghost : _ghosts)
+		{
+			SpriteBatch::Draw(ghost.GetTexture(), &ghost.Position, &ghost.Rect);
+		}
+
+		// Draw Cherry
+		SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
+
+		// Draw Player
+		if (!_pacman->isDead)
+		{
+			SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
+		}
+
+		// Draws String
+		SpriteBatch::DrawString(stream.str().c_str(), _scorePosition, Color::White);
 	}
-	
-
-	SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
-
-	// Draw Player
-	if (!_pacman->isDead)
-	{
-		SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
-	}
-
-	// Draws String
-	SpriteBatch::DrawString(stream.str().c_str(), _scorePosition, Color::White);
 
 
 	// Draw Start Menu
-	if (!_gameStarted) {
+	if (_startMenu->drawMenu) {
 		std::stringstream menuStream;
-		menuStream.str("Pacman");
-		_menu->stringPosition = new Vector2(S2D::Graphics::GetViewportWidth() / 2.0f, S2D::Graphics::GetViewportHeight() / 2.0f);
-		SpriteBatch::Draw(_menu->background, _menu->rect, nullptr);
-		SpriteBatch::DrawString(menuStream.str().c_str(), _menu->stringPosition, Color::Yellow);
-		menuStream.str("Press Space To Start");
-		SpriteBatch::DrawString(menuStream.str().c_str(), new Vector2(_menu->stringPosition->X - 55.0f, _menu->stringPosition->Y + 30.0f), Color::White);
+		string s = "Pacman";
+		menuStream.str(s);
+		_startMenu->stringPosition = new Vector2((_width / 2.0f) - (s.length() * 5.0f), _height / 2.0f);
+		SpriteBatch::Draw(_startMenu->background, _startMenu->rect, nullptr);
+		SpriteBatch::DrawString(menuStream.str().c_str(), _startMenu->stringPosition, Color::Yellow);
+		s = "Press Space To Start";
+		menuStream.str(s);
+		SpriteBatch::DrawString(menuStream.str().c_str(), new Vector2((_width / 2.0f) - (s.length() * 4.0f), _startMenu->stringPosition->Y + 30.0f), Color::White);
 	}
 
 	// Draw Pause Menu
-	if (_paused) {
+	if (_pauseMenu->drawMenu) {
 		std::stringstream menuStream;
-		menuStream.str("Game Paused");
-
-		SpriteBatch::Draw(_menu->background, _menu->rect, nullptr);
-		SpriteBatch::DrawString(menuStream.str().c_str(), _menu->stringPosition, Color::White);
+		string s = "Game Paused";
+		menuStream.str(s);
+		_pauseMenu->stringPosition = new Vector2((_width / 2.0f) - (s.length() * 5.0f), _height / 2.0f);
+		SpriteBatch::Draw(_pauseMenu->background, _pauseMenu->rect, nullptr);
+		SpriteBatch::DrawString(menuStream.str().c_str(), _pauseMenu->stringPosition, Color::White);
 	}
 
 	// End Drawing
@@ -245,10 +234,31 @@ bool Pacman::CheckBoxCollision(int x1, int y1, int width1, int height1, int x2, 
 
 void Pacman::CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey)
 {
-	// Checks if Space is pressed and game isn't started
-	if (state->IsKeyDown(startKey) && !_gameStarted) {
-		_gameStarted = true;
+	if (_intro->GetState() == SoundEffectState::PLAYING && _gameStarted == false)
+	{
+		_introHasPlayed = true;
 	}
+
+	if (_introHasPlayed)
+	{
+		if (_intro->GetState() == SoundEffectState::STOPPED)
+		{
+			_gameStarted = true;
+			if (state->IsKeyUp(startKey))
+				_startMenu->isKeyDown = false;
+		}
+	}
+
+	// Checks if Space is pressed and game isn't started
+	if (state->IsKeyDown(startKey) && !_gameStarted && !_startMenu->isKeyDown) 
+	{
+		_startMenu->isKeyDown = true;
+		_startMenu->drawMenu = false;
+		_drawLevel = true;
+		Audio::Play(_intro);
+	}
+
+	
 }
 
 void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
@@ -257,14 +267,15 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 	if (_gameStarted) {
 
 		// Checks if P key is pressed
-		if (state->IsKeyDown(pauseKey) && !_menu->isKeyDown)
+		if (state->IsKeyDown(pauseKey) && !_pauseMenu->isKeyDown)
 		{
-			_menu->isKeyDown = true;
+			_pauseMenu->isKeyDown = true;
 			_paused = !_paused;
+			_pauseMenu->drawMenu = !_pauseMenu->drawMenu;
 		}
 
 		if (state->IsKeyUp(pauseKey))
-			_menu->isKeyDown = false;
+			_pauseMenu->isKeyDown = false;
 	}
 }
 
@@ -476,6 +487,22 @@ void Pacman::UpdateGhostPosition(int elapsedTime)
 	}
 }
 
+void Pacman::CheckCherryCollisions()
+{
+	// Cherry collision
+	if (CheckBoxCollision(
+		_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Width,
+		_cherry->position->X, _cherry->position->Y, _cherry->rect->Width, _cherry->rect->Width))
+	{
+		// Collision detected
+
+		// Update score
+		_curScore += 200;
+		// Move Cherry out of the screen bounds
+		_cherry->position = new Vector2(-100, -100);
+	}
+}
+
 void Pacman::CheckGhostCollisions()
 {
 	// Local Variables
@@ -502,6 +529,25 @@ void Pacman::CheckGhostCollisions()
 		{
 			// Collision detected
 			_pacman->isDead = true;
+		}
+	}
+}
+
+void Pacman::CheckMunchieCollisions()
+{
+	// Munchie collision
+	for (Food& food : _munchiesVector)
+	{
+		if (CheckBoxCollision(
+			_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Height,
+			food.Position.X, food.Position.Y, food.Rect.Width, food.Rect.Width))
+		{
+			// they collision
+			_curScore += 10;
+			// Play pop sound
+			Audio::Play(_pop);
+			// Move Munchie out of the screen bounds
+			food.Position = Vector2(-100, -100);
 		}
 	}
 }

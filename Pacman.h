@@ -46,6 +46,7 @@ struct Menu {
 	Rect* rect;
 	Vector2* stringPosition;
 	bool isKeyDown;
+	bool drawMenu;
 };
 
 
@@ -64,7 +65,8 @@ private:
 	Munchie* _cherry;
 
 	// Data to represent menu
-	Menu* _menu;
+	Menu* _pauseMenu;
+	Menu* _startMenu;
 
 	// Data to represent creating the level
 	vector<Tile> _tiles;
@@ -75,6 +77,8 @@ private:
 
 	// Sounds
 	SoundEffect* _pop;
+	SoundEffect* _intro;
+	bool _introHasPlayed = false;
 
 	// score
 	int _curScore;
@@ -86,6 +90,7 @@ private:
 	// Data for the game's current state
 	bool _paused;
 	bool _gameStarted;
+	bool _drawLevel = false;
 
 	// Define Functions
 	bool CheckBoxCollision(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
@@ -98,7 +103,9 @@ private:
 	void UpdateMunchieSprite(int elapsedTime);
 	void UpdatePacmanSprite(int elapsedTime);
 	void UpdateGhostPosition(int elapsedTime);
+	void CheckCherryCollisions();
 	void CheckGhostCollisions();
+	void CheckMunchieCollisions();
 
 	Tile LoadMunchieTile(int x, int y);
 	Tile LoadPlayerStartTile(int x, int y);
