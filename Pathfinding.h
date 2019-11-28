@@ -48,7 +48,7 @@ public:
 				RetracePath(_grid, startNode, targetNode);
 				return;
 			}
-
+			
 			// Loop through each node in the neighbour vector
 			for (Node& neighbour : _grid.GetNeightbours(curNode))
 			{
@@ -57,7 +57,7 @@ public:
 				{
 					continue;
 				}
-
+				
 				// Check if the new path to neighbour is shorter OR neighbour is not in openset
 				int newMovementCostToNeighbour = curNode.gCost + GetDistance(curNode, neighbour);
 				if (newMovementCostToNeighbour < neighbour.gCost || find(openSet.begin(), openSet.end(), neighbour) == openSet.end())
@@ -75,12 +75,15 @@ public:
 						openSet.push_back(neighbour);
 					}
 				}
+				
 			}
+			
 		}
 	}
 
 	void RetracePath(Grid _grid, Node startNode, Node targetNode)
 	{
+		
 		vector<Node> path = vector<Node>();
 		Node curNode = targetNode;
 
@@ -92,6 +95,7 @@ public:
 		reverse(path.begin(), path.end());
 
 		*_grid.path = path;
+		
 	}
 
 	int GetDistance(Node nodeA, Node nodeB)

@@ -77,12 +77,12 @@ private:
 	vector<Ghost> _ghosts;
 	int _width;
 	int _height;
-	Grid* grid;
-	Pathfinding* pf;
+	Grid* _grid;
+	Pathfinding* _pf;
 	Texture2D* test;
 	Texture2D* test2;
 	Texture2D* test3;
-	bool hasLoaded = false;
+	bool _hasLoaded = false;
 
 	// Sounds
 	SoundEffect* _pop;

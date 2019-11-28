@@ -20,7 +20,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 
 	_cherry = new Munchie();
 
-	grid = new Grid();
+	_grid = new Grid();
 
 	// Sounds
 	_pop = new SoundEffect();
@@ -66,8 +66,12 @@ Pacman::~Pacman()
 	delete test3;
 
 	// Clean up A*
-	delete grid;
-	delete pf;
+	for (Node n : *_grid->path) {
+		delete n.parent;
+	}
+	delete _grid->path;
+	delete _grid;
+	delete _pf;
 
 	// Clean up menu
 	delete _pauseMenu;
@@ -99,7 +103,7 @@ void Pacman::LoadContent()
 	_scorePosition = new Vector2(10.0f, 25.0f);
 
 	// Generate levels
-	pf = new Pathfinding();
+	_pf = new Pathfinding();
 	GenerateLevel();
 
 	// Set Menu Paramters
@@ -137,7 +141,7 @@ void Pacman::Update(int elapsedTime)
 	CheckPaused(keyboardState, Input::Keys::P);
 
 	// Check path
-	pf->FindPath(*grid,*_pacman->position, _ghosts[0].Position);
+	_pf->FindPath(*_grid,*_pacman->position, _ghosts[0].Position);
 
 	if (!_paused && _gameStarted) {
 
@@ -175,21 +179,21 @@ void Pacman::Draw(int elapsedTime)
 	
 	
 	// Draw all nodes
-	if (hasLoaded)
+	if (_hasLoaded)
 	{
-		if (grid != nullptr)
+		if (_grid != nullptr)
 		{
-			for (int x = 0; x < grid->gridSizeX; x++)
+			for (int x = 0; x < _grid->gridSizeX; x++)
 			{
-				for (int y = 0; y < grid->gridSizeY; y++)
+				for (int y = 0; y < _grid->gridSizeY; y++)
 				{
-					Node n = grid->grid[x][y];
+					Node n = _grid->grid[x][y];
 					if (n.walkable)
 					{
 						SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 32, 32));
-						if (grid->path != nullptr)
+						if (_grid->path != nullptr)
 						{
-							if (find(grid->path->begin(), grid->path->end(), n) != grid->path->end())
+							if (find(_grid->path->begin(), _grid->path->end(), n) != _grid->path->end())
 							{
 								SpriteBatch::Draw(test3, &n.position, &Rect(0, 0, 32, 32));
 							}
@@ -616,13 +620,13 @@ void Pacman::CheckMunchieCollisions()
 void Pacman::SetupAStart(int width, int height)
 {
 	// A* grid
-	grid->gridWorldSize = Vector2(width * 32.0f, height * 32.0f);
-	grid->gridSizeX = width;
-	grid->gridSizeY = height;
-	grid->nodeRadius = 16.0f;
-	grid->nodeDiameter = grid->nodeRadius * 2.0f;
+	_grid->gridWorldSize = Vector2(width * 32.0f, height * 32.0f);
+	_grid->gridSizeX = width;
+	_grid->gridSizeY = height;
+	_grid->nodeRadius = 16.0f;
+	_grid->nodeDiameter = _grid->nodeRadius * 2.0f;
 
-	grid->grid = vector<vector<Node>>(grid->gridSizeX, vector<Node>(grid->gridSizeY));
+	_grid->grid = vector<vector<Node>>(_grid->gridSizeX, vector<Node>(_grid->gridSizeY));
 
 	// Go through every tile and place a node on each one of them, depending on whether the tile is walkable or not
 	for (const Tile& tile : _tiles)
@@ -633,10 +637,10 @@ void Pacman::SetupAStart(int width, int height)
 		else if (tile.Type == CollissionType::TILE_NOTWALKABLE)
 			collission = false;
 
-		grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, tile.GetPosition(), (int)tile.GetX(), (int)tile.GetY());
+		_grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, tile.GetPosition(), (int)tile.GetX(), (int)tile.GetY());
 	}
 
-	hasLoaded = true;
+	_hasLoaded = true;
 }
 
 Tile Pacman::LoadMunchieTile(int x, int y)
