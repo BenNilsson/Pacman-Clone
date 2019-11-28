@@ -30,7 +30,7 @@ public:
 		{
 			// Find node in the open set with the lowest f cost
 			Node curNode = openSet[0];
-			for (int i = 1; i < openSet.size(); i++)
+			for (int i = 1; i < (int)openSet.size(); i++)
 			{
 				if (openSet[i].fCost() < curNode.fCost() || openSet[i].fCost() == curNode.fCost() && openSet[i].hCost < curNode.hCost)
 				{
