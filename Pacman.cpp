@@ -65,6 +65,7 @@ Pacman::~Pacman()
 	delete test2;
 	delete test3;
 
+	
 	// Clean up A*
 	for (Node n : *_grid->path) {
 		delete n.parent;
@@ -72,6 +73,7 @@ Pacman::~Pacman()
 	delete _grid->path;
 	delete _grid;
 	delete _pf;
+	
 
 	// Clean up menu
 	delete _pauseMenu;
@@ -187,21 +189,29 @@ void Pacman::Draw(int elapsedTime)
 			{
 				for (int y = 0; y < _grid->gridSizeY; y++)
 				{
-					Node n = _grid->grid[x][y];
-					if (n.walkable)
+					try
 					{
-						SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 32, 32));
-						if (_grid->path != nullptr)
+						Node n = _grid->grid.at(x).at(y);
+
+						if (n.walkable)
 						{
-							if (find(_grid->path->begin(), _grid->path->end(), n) != _grid->path->end())
+							SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 32, 32));
+							if (_grid->path != nullptr)
 							{
-								SpriteBatch::Draw(test3, &n.position, &Rect(0, 0, 32, 32));
+								if (find(_grid->path->begin(), _grid->path->end(), n) != _grid->path->end())
+								{
+									SpriteBatch::Draw(test3, &n.position, &Rect(0, 0, 32, 32));
+								}
 							}
 						}
+						else
+						{
+							SpriteBatch::Draw(test2, &n.position, &Rect(0, 0, 32, 32));
+						}
 					}
-					else
+					catch (const std::out_of_range & excepOOR)
 					{
-						SpriteBatch::Draw(test2, &n.position, &Rect(0, 0, 32, 32));
+
 					}
 				}
 			}
@@ -269,9 +279,10 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_pauseMenu->background, _pauseMenu->rect, nullptr);
 		SpriteBatch::DrawString(menuStream.str().c_str(), _pauseMenu->stringPosition, Color::White);
 	}
+	*/
 
 	// End Drawing
-	*/
+	
 	SpriteBatch::EndDraw();
 
 }

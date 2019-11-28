@@ -19,7 +19,7 @@ public:
 
 	int gCost;
 	int hCost;
-	Node* parent;
+	Node* parent = nullptr;
 
 	int fCost()
 	{
@@ -37,6 +37,39 @@ public:
 		position = _position;
 		gridX = _gridX;
 		gridY = _gridY;
+
+		gCost = 0;
+		hCost = 0;
+	}
+
+	friend bool operator== (const Node& refFirstParam, const Node& refSecParam)
+	{
+		if (refFirstParam.walkable == refSecParam.walkable &&
+			refFirstParam.position == refSecParam.position &&
+			refFirstParam.parent == refSecParam.parent &&
+			refFirstParam.hCost == refSecParam.hCost &&
+			refFirstParam.gridY == refSecParam.gridY &&
+			refFirstParam.gridX == refSecParam.gridX &&
+			refFirstParam.gCost == refSecParam.gCost)
+		{
+			return true;
+		}
+		else return false;
+	}
+
+	friend bool operator!= (const Node& refFirstParam, const Node& refSecParam)
+	{
+		if (refFirstParam.walkable == refSecParam.walkable &&
+			refFirstParam.position == refSecParam.position &&
+			refFirstParam.parent == refSecParam.parent &&
+			refFirstParam.hCost == refSecParam.hCost &&
+			refFirstParam.gridY == refSecParam.gridY &&
+			refFirstParam.gridX == refSecParam.gridX &&
+			refFirstParam.gCost == refSecParam.gCost)
+		{
+			return false;
+		}
+		else return true;
 	}
 
 };

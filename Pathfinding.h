@@ -7,6 +7,7 @@
 */
 
 #include "S2D/S2D.h"
+#include "Grid.h"
 
 using namespace S2D;
 
@@ -42,7 +43,7 @@ public:
 			closedSet.push_back(curNode);
 
 			// Check to see if the cur nodei s the target node
-			if (curNode.position == targetNode.position)
+			if (curNode == targetNode)
 			{
 				// Found path
 				RetracePath(_grid, startNode, targetNode);
@@ -84,18 +85,17 @@ public:
 	void RetracePath(Grid _grid, Node startNode, Node targetNode)
 	{
 		
-		vector<Node> path = vector<Node>();
+		vector<Node> *path = new vector<Node>();
 		Node curNode = targetNode;
 
-		while (curNode.position != startNode.position)
+		while (curNode != startNode)
 		{
-			path.push_back(curNode);
+			path->push_back(curNode);
 			curNode = *curNode.parent;
 		}
-		reverse(path.begin(), path.end());
+		reverse(path->begin(), path->end());
 
-		*_grid.path = path;
-		
+		_grid.path = path;		
 	}
 
 	int GetDistance(Node nodeA, Node nodeB)
