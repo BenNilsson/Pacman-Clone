@@ -4,6 +4,8 @@
 #include <thread>
 #include <iomanip>
 #include <sstream>
+#include "Grid.h"
+#include "Pathfinding.h"
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), _cPacmanFrameTime(250)
 {
@@ -17,6 +19,8 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 
 
 	_cherry = new Munchie();
+
+	grid = new Grid();
 
 	// Sounds
 	_pop = new SoundEffect();
@@ -57,6 +61,14 @@ Pacman::~Pacman()
 	delete _pop;
 	delete _intro;
 
+	delete test;
+	delete test2;
+	delete test3;
+
+	// Clean up A*
+	delete grid;
+	delete pf;
+
 	// Clean up menu
 	delete _pauseMenu;
 	delete _startMenu;
@@ -75,11 +87,19 @@ void Pacman::LoadContent()
 	_cherry->rect = new Rect(0.0f, 0.0f, 32, 32);
 	_cherry->position = new Vector2(100, 100);
 
+	test = new Texture2D();
+	test2 = new Texture2D();
+	test3 = new Texture2D();
+	test->Load("Textures/walkable.png", false);
+	test2->Load("Textures/not_walkable.png", false);
+	test3->Load("Textures/path.png", false);
+
 	// Set string position
 	_curScore = 0;
 	_scorePosition = new Vector2(10.0f, 25.0f);
 
 	// Generate levels
+	pf = new Pathfinding();
 	GenerateLevel();
 
 	// Set Menu Paramters
@@ -116,6 +136,9 @@ void Pacman::Update(int elapsedTime)
 	// Check if the game is paused
 	CheckPaused(keyboardState, Input::Keys::P);
 
+	// Check path
+	pf->FindPath(*grid,*_pacman->position, _ghosts[0].Position);
+
 	if (!_paused && _gameStarted) {
 
 		if (!_pacman->isDead)
@@ -149,6 +172,41 @@ void Pacman::Draw(int elapsedTime)
 	// Start Drawing
 	SpriteBatch::BeginDraw();
 	
+	
+	
+	// Draw all nodes
+	if (hasLoaded)
+	{
+		if (grid != nullptr)
+		{
+			for (int x = 0; x < grid->gridSizeX; x++)
+			{
+				for (int y = 0; y < grid->gridSizeY; y++)
+				{
+					Node n = grid->grid[x][y];
+					if (n.walkable)
+					{
+						SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 32, 32));
+						if (grid->path != nullptr)
+						{
+							if (find(grid->path->begin(), grid->path->end(), n) != grid->path->end())
+							{
+								SpriteBatch::Draw(test3, &n.position, &Rect(0, 0, 32, 32));
+							}
+						}
+					}
+					else
+					{
+						SpriteBatch::Draw(test2, &n.position, &Rect(0, 0, 32, 32));
+					}
+				}
+			}
+		}
+	}
+	
+	
+
+	/*
 	if (_drawLevel)
 	{
 		// Draw Tiles
@@ -209,20 +267,21 @@ void Pacman::Draw(int elapsedTime)
 	}
 
 	// End Drawing
+	*/
 	SpriteBatch::EndDraw();
 
 }
 
-bool Pacman::CheckBoxCollision(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2)
+bool Pacman::CheckBoxCollision(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2)
 {
-	int left1 = x1;
-	int left2 = x2;
-	int right1 = x1 + width1;
-	int right2 = x2 + width2;
-	int top1 = y1;
-	int top2 = y2;
-	int bottom1 = y1 + height1;
-	int bottom2 = y2 + height2;
+	float left1 = x1;
+	float left2 = x2;
+	float right1 = x1 + width1;
+	float right2 = x2 + width2;
+	float top1 = y1;
+	float top2 = y2;
+	float bottom1 = y1 + height1;
+	float bottom2 = y2 + height2;
 
 	if (bottom1 < top2) return false;
 	if (top1 > bottom2) return false;
@@ -282,20 +341,20 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 void Pacman::CheckViewportCollision()
 {
 	// Checks if Pacman is off the right side of the screen
-	if (_pacman->position->X + _pacman->sourceRect->Width > _width)
-		_pacman->position->X = (float)(0 - 32) + _pacman->sourceRect->Width;
+	if (_pacman->position->X + (float)_pacman->sourceRect->Width > (float)_width)
+		_pacman->position->X = (0.0f - 32.0f) + (float)_pacman->sourceRect->Width;
 
 	// Checks if Pacman is off the left side of the screen
-	if (_pacman->position->X - _pacman->sourceRect->Width < (float)(0 - 32))
-		_pacman->position->X = _width - _pacman->sourceRect->Width;
+	if (_pacman->position->X - (float)_pacman->sourceRect->Width < (0.0f - 32.0f))
+		_pacman->position->X = (float)_width - _pacman->sourceRect->Width;
 
 	// Checks if Pacman is off the top side of the screen
-	if (_pacman->position->Y - _pacman->sourceRect->Height < (float)(0 - 32))
-		_pacman->position->Y = _height - _pacman->sourceRect->Height;
+	if (_pacman->position->Y - (float)_pacman->sourceRect->Height < (0.0f - 32.0f))
+		_pacman->position->Y = (float)_height - (float)_pacman->sourceRect->Height;
 
 	// Checks if Pacman is off the down side of the screen
-	if (_pacman->position->Y + _pacman->sourceRect->Height > _height)
-		_pacman->position->Y = (float)(0 - 32) + _pacman->sourceRect->Height;
+	if (_pacman->position->Y + (float)_pacman->sourceRect->Height > (float)_height)
+		_pacman->position->Y = (0.0f - 32.0f) + (float)_pacman->sourceRect->Height;
 }
 
 void Pacman::GenerateLevel()
@@ -343,7 +402,7 @@ void Pacman::GenerateLevel()
 				// Tile is black
 				Texture2D* wall = new Texture2D();
 				wall->Load("Textures/wall.png", false);
-				_tiles.push_back(Tile(x, y, wall, TileType::TILE_SOLID));
+				_tiles.push_back(Tile(x, y, wall, CollissionType::TILE_NOTWALKABLE));
 			}
 
 			// Pacman
@@ -367,9 +426,11 @@ void Pacman::GenerateLevel()
 			// Transparent
 			if (alpha == 0)
 			{
-				_tiles.push_back(Tile(x, y, nullptr, TileType::TILE_TRANSPARENT));
+				_tiles.push_back(Tile(x, y, nullptr, CollissionType::TILE_TRANSPARENT));
 			}			
 		}
+
+		SetupAStart(width, height);
 	}
 
 	// Free up ram
@@ -436,7 +497,7 @@ void Pacman::UpdateMunchieSprite(int elapsedTime)
 			food.CurrentFrameTime = 0;
 		}
 
-		food.Rect.X = food.Rect.Width * food.FrameCount;
+		food.Rect.X = (float)food.Rect.Width * (float)food.FrameCount;
 	}
 }
 
@@ -454,11 +515,11 @@ void Pacman::UpdatePacmanSprite(int elapsedTime)
 		_pacman->currentFrameTime = 0;
 	}
 
-	_pacman->sourceRect->X = _pacman->sourceRect->Width * _pacman->frame;
+	_pacman->sourceRect->X = (float)_pacman->sourceRect->Width * (float)_pacman->frame;
 
 
 	// Set the Pacman source rect to match with the row of the spritesheet which pacman needs
-	_pacman->sourceRect->Y = _pacman->sourceRect->Height * _pacman->direction;
+	_pacman->sourceRect->Y = (float)_pacman->sourceRect->Height * (float)_pacman->direction;
 }
 
 void Pacman::UpdateGhostPosition(int elapsedTime)
@@ -491,37 +552,37 @@ void Pacman::CheckCherryCollisions()
 {
 	// Cherry collision
 	if (CheckBoxCollision(
-		_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Width,
-		_cherry->position->X, _cherry->position->Y, _cherry->rect->Width, _cherry->rect->Width))
+		_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Width,
+		_cherry->position->X, _cherry->position->Y, (float)_cherry->rect->Width, (float)_cherry->rect->Width))
 	{
 		// Collision detected
 
 		// Update score
 		_curScore += 200;
 		// Move Cherry out of the screen bounds
-		_cherry->position = new Vector2(-100, -100);
+		_cherry->position = new Vector2(-100.0f, -100.0f);
 	}
 }
 
 void Pacman::CheckGhostCollisions()
 {
 	// Local Variables
-	int i = 0;
-	int bottom1 = _pacman->position->Y + _pacman->sourceRect->Height;
-	int bottom2 = 0;
-	int left1 = _pacman->position->X;
-	int left2 = 0;
-	int right1 = _pacman->position->X + _pacman->sourceRect->Width;
-	int right2 = 0;
-	int top1 = _pacman->position->Y;
-	int top2 = 0;
+	float i = 0;
+	float bottom1 = _pacman->position->Y + (float)_pacman->sourceRect->Height;
+	float bottom2 = 0;
+	float left1 = _pacman->position->X;
+	float left2 = 0;
+	float right1 = _pacman->position->X + (float)_pacman->sourceRect->Width;
+	float right2 = 0;
+	float top1 = _pacman->position->Y;
+	float top2 = 0;
 
 	for (Ghost& ghost : _ghosts)
 	{
 		// Populate variables with ghost data
-		bottom2 = ghost.Position.Y + ghost.Rect.Height;
+		bottom2 = ghost.Position.Y + (float)ghost.Rect.Height;
 		left2 = ghost.Position.X;
-		right2 = ghost.Position.X + ghost.Rect.Width;
+		right2 = ghost.Position.X + (float)ghost.Rect.Width;
 		top2 = ghost.Position.Y;
 
 		// Check for collision
@@ -539,8 +600,8 @@ void Pacman::CheckMunchieCollisions()
 	for (Food& food : _munchiesVector)
 	{
 		if (CheckBoxCollision(
-			_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Height,
-			food.Position.X, food.Position.Y, food.Rect.Width, food.Rect.Width))
+			_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Height,
+			food.Position.X, food.Position.Y, (float)food.Rect.Width, (float)food.Rect.Width))
 		{
 			// they collision
 			_curScore += 10;
@@ -550,6 +611,32 @@ void Pacman::CheckMunchieCollisions()
 			food.Position = Vector2(-100, -100);
 		}
 	}
+}
+
+void Pacman::SetupAStart(int width, int height)
+{
+	// A* grid
+	grid->gridWorldSize = Vector2(width * 32.0f, height * 32.0f);
+	grid->gridSizeX = width;
+	grid->gridSizeY = height;
+	grid->nodeRadius = 16.0f;
+	grid->nodeDiameter = grid->nodeRadius * 2.0f;
+
+	grid->grid = vector<vector<Node>>(grid->gridSizeX, vector<Node>(grid->gridSizeY));
+
+	// Go through every tile and place a node on each one of them, depending on whether the tile is walkable or not
+	for (const Tile& tile : _tiles)
+	{
+		bool collission = false;
+		if (tile.Type == CollissionType::TILE_WALKABLE)
+			collission = true;
+		else if (tile.Type == CollissionType::TILE_NOTWALKABLE)
+			collission = false;
+
+		grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, tile.GetPosition(), (int)tile.GetX(), (int)tile.GetY());
+	}
+
+	hasLoaded = true;
 }
 
 Tile Pacman::LoadMunchieTile(int x, int y)
@@ -562,15 +649,15 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	_munchiesVector.push_back(Food(r, t, v));
 
 	// Return an empty tile
-	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
+	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
 Tile Pacman::LoadPlayerStartTile(int x, int y)
 {
 	// Load Pacman
-	_pacman->position = new Vector2(x * 32, y * 32);
+	_pacman->position = new Vector2(x * 32.0f, y * 32.0f);
 
-	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
+	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
 Tile Pacman::LoadEnemyTile(int x, int y)
@@ -583,7 +670,7 @@ Tile Pacman::LoadEnemyTile(int x, int y)
 	_ghosts.push_back(Ghost(r, t, v));
 
 	// Return empty tile
-	return Tile(x, y, nullptr, TileType::TILE_TRANSPARENT);
+	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
 

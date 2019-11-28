@@ -14,6 +14,9 @@
 #include "Tile.h"
 #include "Food.h"
 #include "Ghost.h"
+#include "Grid.h"
+#include "Node.h"
+#include "Pathfinding.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -74,13 +77,19 @@ private:
 	vector<Ghost> _ghosts;
 	int _width;
 	int _height;
+	Grid* grid;
+	Pathfinding* pf;
+	Texture2D* test;
+	Texture2D* test2;
+	Texture2D* test3;
+	bool hasLoaded = false;
 
 	// Sounds
 	SoundEffect* _pop;
 	SoundEffect* _intro;
 	bool _introHasPlayed = false;
 
-	// score
+	// Score
 	int _curScore;
 	Vector2* _scorePosition;
 
@@ -93,7 +102,7 @@ private:
 	bool _drawLevel = false;
 
 	// Define Functions
-	bool CheckBoxCollision(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
+	bool CheckBoxCollision(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2);
 	void CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey);
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
 	void CheckViewportCollision();
@@ -106,6 +115,7 @@ private:
 	void CheckCherryCollisions();
 	void CheckGhostCollisions();
 	void CheckMunchieCollisions();
+	void SetupAStart(int width, int height);
 
 	Tile LoadMunchieTile(int x, int y);
 	Tile LoadPlayerStartTile(int x, int y);
