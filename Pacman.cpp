@@ -179,7 +179,7 @@ void Pacman::Draw(int elapsedTime)
 	SpriteBatch::BeginDraw();
 	
 	
-	
+	/* A* debug stuff
 	// Draw all nodes
 	if (_hasLoaded)
 	{
@@ -217,10 +217,10 @@ void Pacman::Draw(int elapsedTime)
 			}
 		}
 	}
-	
+	*/
 	
 
-	/*
+	
 	if (_drawLevel)
 	{
 		// Draw Tiles
@@ -279,7 +279,7 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_pauseMenu->background, _pauseMenu->rect, nullptr);
 		SpriteBatch::DrawString(menuStream.str().c_str(), _pauseMenu->stringPosition, Color::White);
 	}
-	*/
+	
 
 	// End Drawing
 	
@@ -478,21 +478,75 @@ void Pacman::MovePacman(int elapsedTime)
 {
 	float pacmanSpeed = _cPacmanSpeed * elapsedTime * _pacman->speedMultiplier;
 
-	// Move pacman in the direction of him facing
+	// Set new momvement
+	float newMoveX = _pacman->position->X;
+	float newMoveY = _pacman->position->Y;
+
 	switch (_pacman->direction)
 	{
 	case 0:
-		_pacman->position->X += pacmanSpeed;
+		newMoveX = _pacman->position->X + pacmanSpeed;
 		break;
 	case 1:
-		_pacman->position->Y += pacmanSpeed;
+		newMoveY = _pacman->position->Y + pacmanSpeed;
 		break;
 	case 2:
-		_pacman->position->X -= pacmanSpeed;
+		newMoveX = _pacman->position->X - pacmanSpeed;
 		break;
 	case 3:
-		_pacman->position->Y -= pacmanSpeed;
+		newMoveY = _pacman->position->Y - pacmanSpeed;
 		break;
+	}
+
+	// Initialise movement boolean
+	bool canMove = false;
+
+	// Loop through all tiles
+	for (const Tile& tile : _tiles)
+	{
+		// Check if tile can collide
+		if (tile.Type == CollissionType::TILE_NOTWALKABLE)
+		{
+			// Check if the tile is colliding with Pacman
+			// Due to tight space, temporaily somewhat of a fix is to check a smaller value than pacman's width and heigh
+			// Basically, treat pacman as he is on a diet (or should have been at least).
+			// Real fix it to move pacman to the wall when colliding so that we don't run into issues where he gets stuck
+			if (CheckBoxCollision(newMoveX, newMoveY, _pacman->sourceRect->Width - 4, _pacman->sourceRect->Height - 4,
+				tile.GetX(), tile.GetY(), tile.Width, tile.Height))
+			{
+				// Pacman has collided with wall, set move to false and break out of the loop
+				canMove = false;
+				cout << "Pacman collision detected" << endl;
+				break;
+			}
+			else canMove = true;
+		}
+		else
+		{
+			// Pacman didn't collide with a wall, set move to true
+			canMove = true;
+		}
+	}
+
+	// Check if pacman can move
+	if (canMove)
+	{
+		// Move pacman in the direction based on direction
+		switch (_pacman->direction)
+		{
+		case 0:
+			_pacman->position->X += pacmanSpeed;
+			break;
+		case 1:
+			_pacman->position->Y += pacmanSpeed;
+			break;
+		case 2:
+			_pacman->position->X -= pacmanSpeed;
+			break;
+		case 3:
+			_pacman->position->Y -= pacmanSpeed;
+			break;
+		}
 	}
 }
 
