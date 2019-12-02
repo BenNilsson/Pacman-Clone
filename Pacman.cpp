@@ -714,7 +714,7 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	Rect r = Rect(0, 0, 12, 12);
 	Texture2D* t = new Texture2D();
 	t->Load("Textures/Munchie.png", false);
-	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + (16 - (r.Height * 0.5f)));
+	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + ((32 * 0.5f) - r.Height * 0.5f));
 	_munchiesVector.push_back(Food(r, t, v));
 
 	// Return an empty tile
