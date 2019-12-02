@@ -6,6 +6,7 @@
 #include <sstream>
 #include "Grid.h"
 #include "Pathfinding.h"
+#include "GameState.h"
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), _cPacmanFrameTime(250)
 {
@@ -145,6 +146,33 @@ void Pacman::Update(int elapsedTime)
 	// Check path
 	_pf->FindPath(*_grid,*_pacman->position, _ghosts[0].Position);
 
+	switch (GameState::state)
+	{
+	case State::START:
+		break;
+	case State::INTRO:
+		break;
+	case State::PLAYING:
+		if (_pacman->isDead) GameState::state = State::GAMEOVER;
+
+		PacmanInputMovement(keyboardState);
+		MovePacman(elapsedTime);
+		CheckPacmanViewportCollision();
+		AnimatePacmanSprite(elapsedTime);
+		AnimateMunchieSprite(elapsedTime);
+		MoveGhosts(elapsedTime);
+		CheckCherryCollisions();
+		CheckMunchieCollisions();
+		CheckGhostCollisions();
+		break;
+	case State::PAUSED:
+		break;
+	case State::GAMEOVER:
+		break;
+
+	}
+
+	/*
 	if (!_paused && _gameStarted) {
 
 		if (!_pacman->isDead)
@@ -160,6 +188,7 @@ void Pacman::Update(int elapsedTime)
 			CheckGhostCollisions();
 		}
 	}
+	*/
 
 	// Check if game is started
 	CheckGameStarted(keyboardState, Input::Keys::SPACE);
@@ -353,7 +382,7 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 	}
 }
 
-void Pacman::CheckViewportCollision()
+void Pacman::CheckPacmanViewportCollision()
 {
 	// Checks if Pacman is off the right side of the screen
 	if (_pacman->position->X + (float)_pacman->sourceRect->Width > (float)_width)
@@ -452,7 +481,7 @@ void Pacman::GenerateLevel()
 	SOIL_free_image_data(myImage);
 }
 
-void Pacman::Input(Input::KeyboardState* state)
+void Pacman::PacmanInputMovement(Input::KeyboardState* state)
 {
 	// Checks if D key is pressed
 	if (state->IsKeyDown(Input::Keys::D) || state->IsKeyDown(Input::Keys::RIGHT)) {
@@ -550,7 +579,7 @@ void Pacman::MovePacman(int elapsedTime)
 	}
 }
 
-void Pacman::UpdateMunchieSprite(int elapsedTime)
+void Pacman::AnimateMunchieSprite(int elapsedTime)
 {
 	for (Food& food : _munchiesVector)
 	{
@@ -570,7 +599,7 @@ void Pacman::UpdateMunchieSprite(int elapsedTime)
 	}
 }
 
-void Pacman::UpdatePacmanSprite(int elapsedTime)
+void Pacman::AnimatePacmanSprite(int elapsedTime)
 {
 	// Update Pacman frame time
 	_pacman->currentFrameTime += elapsedTime;
@@ -591,7 +620,7 @@ void Pacman::UpdatePacmanSprite(int elapsedTime)
 	_pacman->sourceRect->Y = (float)_pacman->sourceRect->Height * (float)_pacman->direction;
 }
 
-void Pacman::UpdateGhostPosition(int elapsedTime)
+void Pacman::MoveGhosts(int elapsedTime)
 {
 	for (Ghost& ghost : _ghosts)
 	{

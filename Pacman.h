@@ -105,13 +105,13 @@ private:
 	bool CheckBoxCollision(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2);
 	void CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey);
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey);
-	void CheckViewportCollision();
+	void CheckPacmanViewportCollision();
 	void GenerateLevel();
-	void Input(Input::KeyboardState* state);
+	void PacmanInputMovement(Input::KeyboardState* state);
 	void MovePacman(int elapsedTime);
-	void UpdateMunchieSprite(int elapsedTime);
-	void UpdatePacmanSprite(int elapsedTime);
-	void UpdateGhostPosition(int elapsedTime);
+	void AnimateMunchieSprite(int elapsedTime);
+	void AnimatePacmanSprite(int elapsedTime);
+	void MoveGhosts(int elapsedTime);
 	void CheckCherryCollisions();
 	void CheckGhostCollisions();
 	void CheckMunchieCollisions();
