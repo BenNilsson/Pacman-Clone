@@ -146,14 +146,14 @@ void Pacman::Update(int elapsedTime)
 	// Check path
 	_pf->FindPath(*_grid,*_pacman->position, _ghosts[0].Position);
 
-	switch (GameState::state)
+	switch (GameState::GetState())
 	{
 	case State::START:
 		break;
 	case State::INTRO:
 		break;
 	case State::PLAYING:
-		if (_pacman->isDead) GameState::state = State::GAMEOVER;
+		if (_pacman->isDead) GameState::SetState(State::GAMEOVER);
 
 		PacmanInputMovement(keyboardState);
 		MovePacman(elapsedTime);

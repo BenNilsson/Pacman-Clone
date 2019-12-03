@@ -13,6 +13,8 @@ class GameState
 {
 public:
 	
+	static void SetState(State _state);
+	static State GetState();
 	static State state;
 
 private:
