@@ -1,11 +1,8 @@
 #include "GameState.h"
 
-void GameState::SetState(GameState::State _state)
-{
-	state = _state;
-}
+State GameState::state = State::START;
 
-GameState::State GameState::GetState()
+GameState::GameState()
 {
-	return state;
+	
 }

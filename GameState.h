@@ -13,11 +13,18 @@ class GameState
 {
 public:
 	
-	static void SetState(State _state);
-	static State GetState();
-	static State state;
+	static State GetState()
+	{
+		return state;
+	}
+
+	static void SetState(State _state) 
+	{
+		state = _state;
+	}
 
 private:
 
+	static State state;
 	GameState();
 };

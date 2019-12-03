@@ -140,21 +140,21 @@ void Pacman::Update(int elapsedTime)
 	// Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 
-	// Check if the game is paused
-	CheckPaused(keyboardState, Input::Keys::P);
-
 	// Check path
 	_pf->FindPath(*_grid,*_pacman->position, _ghosts[0].Position);
 
 	switch (GameState::GetState())
 	{
 	case State::START:
+		// Check if game is started
+		CheckGameStarted(keyboardState, Input::Keys::SPACE);
 		break;
 	case State::INTRO:
+
 		break;
 	case State::PLAYING:
 		if (_pacman->isDead) GameState::SetState(State::GAMEOVER);
-
+		CheckPaused(keyboardState, Input::Keys::P);
 		PacmanInputMovement(keyboardState);
 		MovePacman(elapsedTime);
 		CheckPacmanViewportCollision();
@@ -166,32 +166,12 @@ void Pacman::Update(int elapsedTime)
 		CheckGhostCollisions();
 		break;
 	case State::PAUSED:
+		CheckPaused(keyboardState, Input::Keys::P);
 		break;
 	case State::GAMEOVER:
 		break;
 
 	}
-
-	/*
-	if (!_paused && _gameStarted) {
-
-		if (!_pacman->isDead)
-		{
-			Input(keyboardState);
-			MovePacman(elapsedTime);
-			CheckViewportCollision();
-			UpdatePacmanSprite(elapsedTime);
-			UpdateMunchieSprite(elapsedTime);
-			UpdateGhostPosition(elapsedTime);
-			CheckCherryCollisions();
-			CheckMunchieCollisions();
-			CheckGhostCollisions();
-		}
-	}
-	*/
-
-	// Check if game is started
-	CheckGameStarted(keyboardState, Input::Keys::SPACE);
 
 	// Close Game
 	if (keyboardState->IsKeyDown(Input::Keys::ESCAPE))
@@ -346,6 +326,8 @@ void Pacman::CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey)
 	{
 		if (_intro->GetState() == SoundEffectState::STOPPED)
 		{
+			// Set Game State to PLAYING
+			GameState::SetState(State::PLAYING);
 			_gameStarted = true;
 			if (state->IsKeyUp(startKey))
 				_startMenu->isKeyDown = false;
@@ -367,14 +349,28 @@ void Pacman::CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey)
 void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 {
 	// Checks if we are in the game (ignores whether the game is paused or not)
-	if (_gameStarted) {
+	if (GameState::GetState() == State::PLAYING || GameState::GetState() == State::PAUSED) {
 
 		// Checks if P key is pressed
 		if (state->IsKeyDown(pauseKey) && !_pauseMenu->isKeyDown)
 		{
+			// Set Game State accordingly
+			switch (GameState::GetState())
+			{
+			case State::PLAYING:
+				GameState::SetState(State::PAUSED);
+				_paused = true;
+				_pauseMenu->drawMenu = true;
+				break;
+			case State::PAUSED:
+				_paused = false;
+				_pauseMenu->drawMenu = false;
+				GameState::SetState(State::PLAYING);
+				break;
+			}
+				
+
 			_pauseMenu->isKeyDown = true;
-			_paused = !_paused;
-			_pauseMenu->drawMenu = !_pauseMenu->drawMenu;
 		}
 
 		if (state->IsKeyUp(pauseKey))
@@ -545,7 +541,6 @@ void Pacman::MovePacman(int elapsedTime)
 			{
 				// Pacman has collided with wall, set move to false and break out of the loop
 				canMove = false;
-				cout << "Pacman collision detected" << endl;
 				break;
 			}
 			else canMove = true;
