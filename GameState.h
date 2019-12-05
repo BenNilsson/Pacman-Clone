@@ -6,6 +6,7 @@ enum class State
 	INTRO,
 	PLAYING,
 	PAUSED,
+	WON,
 	GAMEOVER,
 };
 

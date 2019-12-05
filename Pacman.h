@@ -118,6 +118,7 @@ private:
 	void CheckCherryCollisions();
 	void CheckGhostCollisions();
 	void CheckMunchieCollisions();
+	void CheckWin();
 	void SetupAStart(int width, int height);
 
 	Tile LoadMunchieTile(int x, int y);

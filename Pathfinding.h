@@ -63,7 +63,6 @@ public:
 				if (!neighbour.walkable || std::find(closedSet.begin(), closedSet.end(), neighbour) != closedSet.end())
 				{
 					// Element found
-					cout << "neighbour was found in openset" << endl;
 					continue;
 				}
 

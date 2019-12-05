@@ -13,6 +13,7 @@ public:
 	int CurrentFrameTime;
 	Rect Rect;
 	Vector2 Position;
+	bool Collected;
 
 	const Texture2D* GetTexture() const;
 	const int GetFrameTime() const;

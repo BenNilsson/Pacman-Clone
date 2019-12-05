@@ -179,9 +179,13 @@ void Pacman::Update(int elapsedTime)
 		CheckCherryCollisions();
 		CheckMunchieCollisions();
 		CheckGhostCollisions();
+		CheckWin();
 		break;
 	case State::PAUSED:
 		CheckPaused(keyboardState, Input::Keys::P);
+		break;
+	case State::WON:
+		// restart level
 		break;
 	case State::GAMEOVER:
 		break;
@@ -202,7 +206,7 @@ void Pacman::Draw(int elapsedTime)
 	// Start Drawing
 	SpriteBatch::BeginDraw();
 	
-	
+	/*
 	//A* debug stuff
 	// Draw all nodes
 	if (_hasLoaded)
@@ -220,11 +224,11 @@ void Pacman::Draw(int elapsedTime)
 
 						if (n.walkable)
 						{
-							SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 32, 32));
+							SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 1, 1));
 						}
 						else
 						{
-							SpriteBatch::Draw(test2, &n.position, &Rect(0, 0, 32, 32));
+							SpriteBatch::Draw(test2, &n.position, &Rect(0, 0, 1, 1));
 						}
 						
 					}
@@ -243,15 +247,15 @@ void Pacman::Draw(int elapsedTime)
 				for (Node node : *_grid->path)
 				{
 					cout << "Drawing node" << endl;
-					SpriteBatch::Draw(test3, &node.position, &Rect(0, 0, 32, 32));
+					SpriteBatch::Draw(test3, &node.position, &Rect(0, 0, 1, 1));
 				}
 			}
 		}
 	}
-	
+	*/
 	
 
-	/*
+	
 	if (_drawLevel)
 	{
 		// Draw Tiles
@@ -310,7 +314,7 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_pauseMenu->background, _pauseMenu->rect, nullptr);
 		SpriteBatch::DrawString(menuStream.str().c_str(), _pauseMenu->stringPosition, Color::White);
 	}
-	*/
+	
 
 	// End Drawing
 	
@@ -465,6 +469,132 @@ void Pacman::GenerateLevel()
 				Texture2D* wall = new Texture2D();
 				wall->Load("Textures/wall.png", false);
 				_tiles.push_back(Tile(x, y, wall, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Top edge tile
+			if (red == 255 && green == 0 && blue == 255 && alpha == 255)
+			{
+				// Pink tile
+				Texture2D* edge_top = new Texture2D();
+				edge_top->Load("Textures/edge_up.png", false);
+				_tiles.push_back(Tile(x, y, edge_top, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Bottom edge tile
+			if (red == 130 && green == 0 && blue == 130 && alpha == 255)
+			{
+				// Dark purple tile
+				Texture2D* edge_bottom = new Texture2D();
+				edge_bottom->Load("Textures/edge_down.png", false);
+				_tiles.push_back(Tile(x, y, edge_bottom, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// right edge
+			if (red == 0 && green == 0 && blue == 255 && alpha == 255)
+			{
+				// Blue tile
+				Texture2D* edge_right = new Texture2D();
+				edge_right->Load("Textures/edge_right.png", false);
+				_tiles.push_back(Tile(x, y, edge_right, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// left edge
+			if (red == 100 && green == 100 && blue == 255 && alpha == 255)
+			{
+				// Blue tile
+				Texture2D* edge_left = new Texture2D();
+				edge_left->Load("Textures/edge_left.png", false);
+				_tiles.push_back(Tile(x, y, edge_left, CollissionType::TILE_NOTWALKABLE));
+			}
+			
+			// Vertical tile
+			if (red == 0 && green == 255 && blue == 255 && alpha == 255)
+			{
+				// Light blue
+				Texture2D* verticle_wall = new Texture2D();
+				verticle_wall->Load("Textures/wall_vertical.png", false);
+				_tiles.push_back(Tile(x, y, verticle_wall, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Horizontal tile
+			if (red == 6 && green == 112 && blue == 112 && alpha == 255)
+			{
+				// Light blue
+				Texture2D* wall_horizontal = new Texture2D();
+				wall_horizontal->Load("Textures/wall_horizontal.png", false);
+				_tiles.push_back(Tile(x, y, wall_horizontal, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Top only tile
+			if (red == 182 && green == 88 && blue == 238 && alpha == 255)
+			{
+				// lighter purple
+				Texture2D* wall_top = new Texture2D();
+				wall_top->Load("Textures/wall_top.png", false);
+				_tiles.push_back(Tile(x, y, wall_top, CollissionType::TILE_NOTWALKABLE));
+			}
+			
+			// Bottom only tile
+			if (red == 55 && green == 16 && blue == 78 && alpha == 255)
+			{
+				// darker purple
+				Texture2D* wall_bottom = new Texture2D();
+				wall_bottom->Load("Textures/wall_bottom.png", false);
+				_tiles.push_back(Tile(x, y, wall_bottom, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Right only tile
+			if (red == 104 && green == 89 && blue == 112 && alpha == 255)
+			{
+				// purple/gray-ish purple
+				Texture2D* wall_side_right = new Texture2D();
+				wall_side_right->Load("Textures/wall_side_right.png", false);
+				_tiles.push_back(Tile(x, y, wall_side_right, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Left only tile
+			if (red == 49 && green == 43 && blue == 52 && alpha == 255)
+			{
+				// dark gray-ish purple
+				Texture2D* wall_side_left = new Texture2D();
+				wall_side_left->Load("Textures/wall_side_left.png", false);
+				_tiles.push_back(Tile(x, y, wall_side_left, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Bottom right corner tile
+			if (red == 112 && green == 62 && blue == 6 && alpha == 255)
+			{
+				// brown
+				Texture2D* bottom_right_corner = new Texture2D();
+				bottom_right_corner->Load("Textures/bottom_right_corner.png", false);
+				_tiles.push_back(Tile(x, y, bottom_right_corner, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Top right corner tile
+			if (red == 182 && green == 106 && blue == 22 && alpha == 255)
+			{
+				// light brown
+				Texture2D* top_right_corner = new Texture2D();
+				top_right_corner->Load("Textures/top_right_corner.png", false);
+				_tiles.push_back(Tile(x, y, top_right_corner, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Top left corner tile
+			if (red == 177 && green == 134 && blue == 87 && alpha == 255)
+			{
+				// light brown
+				Texture2D* top_left_corner = new Texture2D();
+				top_left_corner->Load("Textures/top_left_corner.png", false);
+				_tiles.push_back(Tile(x, y, top_left_corner, CollissionType::TILE_NOTWALKABLE));
+			}
+
+			// Bottom left corner tile
+			if (red == 95 && green == 71 && blue == 45 && alpha == 255)
+			{
+				// light brown
+				Texture2D* bottom_left_corner = new Texture2D();
+				bottom_left_corner->Load("Textures/bottom_left_corner.png", false);
+				_tiles.push_back(Tile(x, y, bottom_left_corner, CollissionType::TILE_NOTWALKABLE));
 			}
 
 			// Pacman
@@ -716,7 +846,8 @@ void Pacman::CheckMunchieCollisions()
 	{
 		if (CheckBoxCollision(
 			_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Height,
-			food.Position.X, food.Position.Y, (float)food.Rect.Width, (float)food.Rect.Width))
+			food.Position.X, food.Position.Y, (float)food.Rect.Width, (float)food.Rect.Width) &&
+			food.Collected == false)
 		{
 			// they collision
 			_curScore += 10;
@@ -724,8 +855,27 @@ void Pacman::CheckMunchieCollisions()
 			Audio::Play(_pop);
 			// Move Munchie out of the screen bounds
 			food.Position = Vector2(-100, -100);
+			food.Collected = true;
 		}
 	}
+}
+
+void Pacman::CheckWin()
+{
+	bool won = false;
+	for (const Food& food : _munchiesVector)
+	{
+		if (food.Collected == false)
+		{
+			won = false;
+			break;
+		}
+		else won = true;
+	}
+
+	if (won)
+		if (GameState::GetState() == State::PLAYING)
+			GameState::SetState(State::WON);
 }
 
 void Pacman::SetupAStart(int width, int height)
@@ -748,7 +898,8 @@ void Pacman::SetupAStart(int width, int height)
 		else if (tile.Type == CollissionType::TILE_NOTWALKABLE)
 			collission = false;
 
-		_grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, tile.GetPosition(), (int)(tile.GetX() / 32), (int)(tile.GetY() / 32));
+		Vector2 v = Vector2((tile.GetX()) + ((32 * 0.5f)), (tile.GetY()) + ((32 * 0.5f)));
+		_grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, v, (int)(tile.GetX() / 32), (int)(tile.GetY() / 32));
 	}
 
 	_hasLoaded = true;
