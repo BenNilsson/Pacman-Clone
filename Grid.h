@@ -23,25 +23,23 @@ public:
 
 	vector<Node>* path = new vector<Node>();
 
-	vector<Node> GetNeightbours(Node node)
+	vector<Node>* GetNeightbours(Node node)
 	{
-		vector<Node> neighbours = vector<Node>();
+		vector<Node>* neighbours = new vector<Node>();
 
-		// Search for nodes in a 3x3 grid
 		for (int x = -1; x <= 1; x++)
 		{
 			for (int y = -1; y <= 1; y++)
 			{
-				// Skip middle node as it would be the node we are searching from
-				if (x == 0 && y == 0) continue;
+				if (x == 0 && y == 0)
+					continue;
 
 				int checkX = node.gridX + x;
-				int checkY = node.gridY + y;
+				int checkY = node.gridX + y;
 
-				// Check if the node is inside the grid
 				if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
 				{
-					neighbours.push_back(grid[checkX][checkY]);
+					neighbours->push_back(grid[checkX][checkY]);
 				}
 			}
 		}

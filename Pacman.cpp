@@ -4,6 +4,7 @@
 #include <thread>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 #include "Grid.h"
 #include "Pathfinding.h"
 #include "GameState.h"
@@ -22,6 +23,8 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_cherry = new Munchie();
 
 	_grid = new Grid();
+
+	keyDown = false;
 
 	// Sounds
 	_pop = new SoundEffect();
@@ -137,11 +140,23 @@ void Pacman::LoadContent()
 
 void Pacman::Update(int elapsedTime)
 {
+
 	// Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 
-	// Check path
-	_pf->FindPath(*_grid,*_pacman->position, _ghosts[0].Position);
+	if (keyboardState->IsKeyDown(Input::Keys::F) && keyDown == false)
+	{
+		keyDown = true;
+		_pf->FindPath(*_grid, _ghosts[0].Position, *_pacman->position);
+	}
+
+	if (keyboardState->IsKeyUp(Input::Keys::F))
+	{
+		keyDown = false;
+	}
+
+	if (_grid->path->size() > 0) cout << "Path exists" << endl;
+	//cout << _grid->path->size();
 
 	switch (GameState::GetState())
 	{
@@ -188,48 +203,55 @@ void Pacman::Draw(int elapsedTime)
 	SpriteBatch::BeginDraw();
 	
 	
-	/* A* debug stuff
+	//A* debug stuff
 	// Draw all nodes
 	if (_hasLoaded)
 	{
 		if (_grid != nullptr)
 		{
+			// Draw Nodes
 			for (int x = 0; x < _grid->gridSizeX; x++)
 			{
 				for (int y = 0; y < _grid->gridSizeY; y++)
 				{
 					try
 					{
-						Node n = _grid->grid.at(x).at(y);
+						Node& n = _grid->grid.at(x).at(y);
 
 						if (n.walkable)
 						{
 							SpriteBatch::Draw(test, &n.position, &Rect(0, 0, 32, 32));
-							if (_grid->path != nullptr)
-							{
-								if (find(_grid->path->begin(), _grid->path->end(), n) != _grid->path->end())
-								{
-									SpriteBatch::Draw(test3, &n.position, &Rect(0, 0, 32, 32));
-								}
-							}
 						}
 						else
 						{
 							SpriteBatch::Draw(test2, &n.position, &Rect(0, 0, 32, 32));
 						}
+						
 					}
 					catch (const std::out_of_range & excepOOR)
 					{
-
+						cout << "ERROR" << endl;
 					}
+				}
+			}
+
+			// Draw Path
+			if (_grid->path != nullptr)
+			{
+				//cout << "Path exists" << endl;
+				// Path exists, go through every node in path and draw it
+				for (Node node : *_grid->path)
+				{
+					cout << "Drawing node" << endl;
+					SpriteBatch::Draw(test3, &node.position, &Rect(0, 0, 32, 32));
 				}
 			}
 		}
 	}
-	*/
+	
 	
 
-	
+	/*
 	if (_drawLevel)
 	{
 		// Draw Tiles
@@ -288,7 +310,7 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_pauseMenu->background, _pauseMenu->rect, nullptr);
 		SpriteBatch::DrawString(menuStream.str().c_str(), _pauseMenu->stringPosition, Color::White);
 	}
-	
+	*/
 
 	// End Drawing
 	
@@ -466,7 +488,7 @@ void Pacman::GenerateLevel()
 			// Transparent
 			if (alpha == 0)
 			{
-				_tiles.push_back(Tile(x, y, nullptr, CollissionType::TILE_TRANSPARENT));
+				_tiles.push_back(Tile(x, y, nullptr, CollissionType::TILE_WALKABLE));
 			}			
 		}
 
@@ -726,7 +748,7 @@ void Pacman::SetupAStart(int width, int height)
 		else if (tile.Type == CollissionType::TILE_NOTWALKABLE)
 			collission = false;
 
-		_grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, tile.GetPosition(), (int)tile.GetX(), (int)tile.GetY());
+		_grid->grid[(int)tile.GetX() / 32][(int)tile.GetY() / 32] = Node(collission, tile.GetPosition(), (int)(tile.GetX() / 32), (int)(tile.GetY() / 32));
 	}
 
 	_hasLoaded = true;

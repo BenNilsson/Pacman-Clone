@@ -84,6 +84,9 @@ private:
 	Texture2D* test3;
 	bool _hasLoaded = false;
 
+	// Data for testing stuff
+	bool keyDown;
+
 	// Sounds
 	SoundEffect* _pop;
 	SoundEffect* _intro;
