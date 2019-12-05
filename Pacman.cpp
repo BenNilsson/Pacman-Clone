@@ -463,6 +463,9 @@ void Pacman::GenerateLevel()
 			if (channels == 4)
 				alpha = myImage[pixelIndex + 3];
 
+#pragma region Wall Tiles
+
+
 			if (red == 0 && green == 0 && blue == 0 && alpha == 255)
 			{
 				// Tile is black
@@ -596,6 +599,8 @@ void Pacman::GenerateLevel()
 				bottom_left_corner->Load("Textures/bottom_left_corner.png", false);
 				_tiles.push_back(Tile(x, y, bottom_left_corner, CollissionType::TILE_NOTWALKABLE));
 			}
+
+#pragma endregion
 
 			// Pacman
 			if (red == 0 && green == 255 && blue == 0 && alpha == 255)
