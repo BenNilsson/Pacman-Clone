@@ -695,7 +695,7 @@ void Pacman::MovePacman(int elapsedTime)
 			// Basically, treat pacman as he is on a diet (or should have been at least).
 			// Real fix it to move pacman to the wall when colliding so that we don't run into issues where he gets stuck
 			if (CheckBoxCollision(newMoveX, newMoveY, _pacman->sourceRect->Width - 4, _pacman->sourceRect->Height - 4,
-				tile.GetX(), tile.GetY(), tile.Width - 2, tile.Height - 2))
+				tile.GetX(), tile.GetY(), tile.Width - 3, tile.Height - 3))
 			{
 				// Pacman has collided with wall, set move to false and break out of the loop
 				canMove = false;
