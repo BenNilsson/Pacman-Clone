@@ -17,6 +17,8 @@
 #include "Grid.h"
 #include "Node.h"
 #include "Pathfinding.h"
+#include "UI.h"
+#include "PowerPellet.h"
 
 // Reduces the amount of typing by including all classes in S2D namespace
 using namespace S2D;
@@ -76,9 +78,10 @@ private:
 	vector<Food> _munchiesVector;
 	vector<Ghost> _ghosts;
 	vector<Food> _cherries;
+	vector<PowerPellet> _powerPellets;
 
 	// UI
-	vector<Texture2D> _livesUI;
+	Texture2D* _healthTexture;
 
 	int _width;
 	int _height;
@@ -117,18 +120,20 @@ private:
 	void GenerateLevel();
 	void PacmanInputMovement(Input::KeyboardState* state);
 	void MovePacman(int elapsedTime);
-	void AnimateMunchieSprite(int elapsedTime);
+	void AnimatePowerPellets(int elapsedTime);
 	void AnimatePacmanSprite(int elapsedTime);
 	void MoveGhosts(int elapsedTime);
 	void CheckCherryCollisions();
 	void CheckGhostCollisions();
 	void CheckMunchieCollisions();
+	void CheckPowerPelletCollisions();
 	void CheckWin();
 	void SetupAStart(int width, int height);
 	void RestartLevel();
 	void ResetLevel();
 
 	Tile LoadMunchieTile(int x, int y);
+	Tile LoadPowerPelletTile(int x, int y);
 	Tile LoadCherryTile(int x, int y);
 	Tile LoadPlayerStartTile(int x, int y);
 	Tile LoadEnemyTile(int x, int y);

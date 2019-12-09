@@ -94,6 +94,10 @@ void Pacman::LoadContent()
 	test2->Load("Textures/not_walkable.png", false);
 	test3->Load("Textures/path.png", false);
 
+	// UI
+	_healthTexture = new Texture2D();
+	_healthTexture->Load("Textures/UI_Health.png", false);
+
 	// Set string position
 	_curScore = 0;
 	_scorePosition = new Vector2(10.0f, 25.0f);
@@ -130,7 +134,6 @@ void Pacman::LoadContent()
 
 void Pacman::Update(int elapsedTime)
 {
-
 	// Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 
@@ -144,9 +147,6 @@ void Pacman::Update(int elapsedTime)
 	{
 		keyDown = false;
 	}
-
-	if (_grid->path->size() > 0) cout << "Path exists" << endl;
-	//cout << _grid->path->size();
 
 	switch (GameState::GetState())
 	{
@@ -164,10 +164,11 @@ void Pacman::Update(int elapsedTime)
 		MovePacman(elapsedTime);
 		CheckPacmanViewportCollision();
 		AnimatePacmanSprite(elapsedTime);
-		AnimateMunchieSprite(elapsedTime);
+		AnimatePowerPellets(elapsedTime);
 		MoveGhosts(elapsedTime);
 		CheckCherryCollisions();
 		CheckMunchieCollisions();
+		CheckPowerPelletCollisions();
 		CheckGhostCollisions();
 		CheckWin();
 		break;
@@ -259,10 +260,27 @@ void Pacman::Draw(int elapsedTime)
 				SpriteBatch::Draw(texture, &tile.GetPosition());
 		}
 
+		// UI
+		
+		for (int i = 0; i < _pacman->lives; i++)
+		{
+			if (_healthTexture != nullptr)
+			{
+				SpriteBatch::Draw(_healthTexture, &Vector2(10 + (i * 25), _height + 10));
+			}
+		}
+		
+
 		// Draw munchies
 		for (const Food& munchie : _munchiesVector)
 		{
 			SpriteBatch::Draw(munchie.GetTexture(), &munchie.Position, &munchie.Rect);
+		}
+
+		// Power Pellets
+		for (const PowerPellet& powerPellet : _powerPellets)
+		{
+			SpriteBatch::Draw(powerPellet.GetTexture(), &powerPellet.Position, &powerPellet.Rect);
 		}
 
 		// Draw ghosts
@@ -616,6 +634,12 @@ void Pacman::GenerateLevel()
 				_tiles.push_back(LoadMunchieTile(x, y));
 			}
 
+			// Power Pellet
+			if (red == 80 && green == 80 && blue == 0 && alpha == 255)
+			{
+				_tiles.push_back(LoadPowerPelletTile(x, y));
+			}
+
 			// Cherry
 			if (red == 85 && green == 0 && blue == 0 && alpha == 255)
 			{
@@ -742,23 +766,23 @@ void Pacman::MovePacman(int elapsedTime)
 }
 
 // Updates all munchie sprites and handles a shape shifting animation
-void Pacman::AnimateMunchieSprite(int elapsedTime)
+void Pacman::AnimatePowerPellets(int elapsedTime)
 {
-	for (Food& food : _munchiesVector)
+	for (PowerPellet& powerPellet : _powerPellets)
 	{
-		food.CurrentFrameTime += elapsedTime;
+		powerPellet.CurrentFrameTime += elapsedTime;
 
-		if (food.CurrentFrameTime > food.GetFrameTime())
+		if (powerPellet.CurrentFrameTime > powerPellet.GetFrameTime())
 		{
-			food.FrameCount++;
+			powerPellet.FrameCount++;
 
-			if (food.FrameCount >= 2)
-				food.FrameCount = 0;
+			if (powerPellet.FrameCount >= 2)
+				powerPellet.FrameCount = 0;
 
-			food.CurrentFrameTime = 0;
+			powerPellet.CurrentFrameTime = 0;
 		}
 
-		food.Rect.X = (float)food.Rect.Width * (float)food.FrameCount;
+		powerPellet.Rect.X = (float)powerPellet.Rect.Width * (float)powerPellet.FrameCount;
 	}
 }
 
@@ -869,9 +893,9 @@ void Pacman::CheckGhostCollisions()
 
 				// Remove health and set state to dead, then reset hurt
 				_pacman->lives--;
-				cout << _pacman->lives << endl;
 				GameState::SetState(State::DEAD);
 				_pacman->hurt = false;
+				break;
 			}
 		}
 	}
@@ -895,6 +919,30 @@ void Pacman::CheckMunchieCollisions()
 			// Move Munchie out of the screen bounds
 			food.Position = Vector2(-100, -100);
 			food.Collected = true;
+		}
+	}
+}
+
+// Checks whether Pacman collides with any of the power pellets
+void Pacman::CheckPowerPelletCollisions()
+{
+	for (PowerPellet& pellet : _powerPellets)
+	{
+		// Check for collision
+		if (CheckBoxCollision(
+			_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Height,
+			pellet.Position.X, pellet.Position.Y, (float)pellet.Rect.Width, (float)pellet.Rect.Width) &&
+			pellet.Collected == false)
+		{
+			// Collision detected
+			_curScore += 50;
+			pellet.Position = Vector2(-100, -100);
+			pellet.Collected = true;
+			if (!pellet.Interacted)
+			{
+				pellet.Activate();
+				pellet.Interacted = true;
+			}
 		}
 	}
 }
@@ -988,11 +1036,24 @@ void Pacman::ResetLevel()
 Tile Pacman::LoadMunchieTile(int x, int y)
 {
 	// Munchie
-	Rect r = Rect(0, 0, 12, 12);
+	Rect r = Rect(0, 0, 8, 8);
 	Texture2D* t = new Texture2D();
 	t->Load("Textures/Munchie.png", false);
 	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + ((32 * 0.5f) - r.Height * 0.5f));
 	_munchiesVector.push_back(Food(r, t, v));
+
+	// Return an empty tile
+	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
+}
+
+Tile Pacman::LoadPowerPelletTile(int x, int y)
+{
+	// Power Pellet
+	Rect r = Rect(0, 0, 16, 16);
+	Texture2D* t = new Texture2D();
+	t->Load("Textures/PowerPellet.png", false);
+	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + ((32 * 0.5f) - r.Height * 0.5f));
+	_powerPellets.push_back(PowerPellet(r, t, v));
 
 	// Return an empty tile
 	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);

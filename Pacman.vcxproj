@@ -89,7 +89,9 @@
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pacman.cpp" />
+    <ClCompile Include="PowerPellet.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Food.h" />
@@ -99,7 +101,9 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="Pathfinding.h" />
+    <ClInclude Include="PowerPellet.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
