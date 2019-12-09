@@ -7,6 +7,7 @@ enum class State
 	PLAYING,
 	PAUSED,
 	WON,
+	DEAD,
 	GAMEOVER,
 };
 

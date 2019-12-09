@@ -10,6 +10,7 @@ public:
 
 	Rect Rect;
 	Vector2 Position;
+	Vector2 StartPosition;
 	int Direction;
 	float Speed;
 

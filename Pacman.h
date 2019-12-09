@@ -25,6 +25,7 @@ using namespace S2D;
 struct Player {
 	// Data to represent Pacman
 	Vector2* position;
+	Vector2 startPosition;
 	Rect* sourceRect;
 	Texture2D* texture;
 	int direction;
@@ -66,9 +67,6 @@ private:
 	Player* _pacman;
 	const int _cPacmanFrameTime;
 
-	// Data to represent Food
-	Munchie* _cherry;
-
 	// Data to represent menu
 	Menu* _pauseMenu;
 	Menu* _startMenu;
@@ -77,6 +75,11 @@ private:
 	vector<Tile> _tiles;
 	vector<Food> _munchiesVector;
 	vector<Ghost> _ghosts;
+	vector<Food> _cherries;
+
+	// UI
+	vector<Texture2D> _livesUI;
+
 	int _width;
 	int _height;
 	Grid* _grid;
@@ -122,8 +125,11 @@ private:
 	void CheckMunchieCollisions();
 	void CheckWin();
 	void SetupAStart(int width, int height);
+	void RestartLevel();
+	void ResetLevel();
 
 	Tile LoadMunchieTile(int x, int y);
+	Tile LoadCherryTile(int x, int y);
 	Tile LoadPlayerStartTile(int x, int y);
 	Tile LoadEnemyTile(int x, int y);
 

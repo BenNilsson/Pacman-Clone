@@ -21,9 +21,6 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_pacman->lives = 3;
 	_pacman->hurt = false;
 
-
-	_cherry = new Munchie();
-
 	_grid = new Grid();
 
 	keyDown = false;
@@ -60,9 +57,6 @@ Pacman::~Pacman()
 	// Clean up the Pacman structure pointer
 	delete _pacman;
 
-	delete _cherry->texture;
-	delete _cherry;
-
 	// Delete sounds
 	delete _pop;
 	delete _intro;
@@ -71,7 +65,6 @@ Pacman::~Pacman()
 	delete test2;
 	delete test3;
 
-	
 	// Clean up A*
 	for (Node n : *_grid->path) {
 		delete n.parent;
@@ -93,11 +86,6 @@ void Pacman::LoadContent()
 	_pacman->texture->Load("Textures/Pacman.tga", false);
 	_pacman->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 	_pacman->position = new Vector2(0, 0);
-
-	_cherry->texture = new Texture2D();
-	_cherry->texture->Load("Textures/Cherry.png", false);
-	_cherry->rect = new Rect(0.0f, 0.0f, 32, 32);
-	_cherry->position = new Vector2(100, 100);
 
 	test = new Texture2D();
 	test2 = new Texture2D();
@@ -187,8 +175,10 @@ void Pacman::Update(int elapsedTime)
 		CheckPaused(keyboardState, Input::Keys::P);
 		break;
 	case State::WON:
-		// restart level
-		cout << "You win!" << endl;
+		ResetLevel();
+		break;
+	case State::DEAD:
+		RestartLevel();
 		break;
 	case State::GAMEOVER:
 		break;
@@ -209,8 +199,8 @@ void Pacman::Draw(int elapsedTime)
 	// Start Drawing
 	SpriteBatch::BeginDraw();
 	
+	// A* debug stuff
 	/*
-	//A* debug stuff
 	// Draw all nodes
 	if (_hasLoaded)
 	{
@@ -270,9 +260,9 @@ void Pacman::Draw(int elapsedTime)
 		}
 
 		// Draw munchies
-		for (const Food& food : _munchiesVector)
+		for (const Food& munchie : _munchiesVector)
 		{
-			SpriteBatch::Draw(food.GetTexture(), &food.Position, &food.Rect);
+			SpriteBatch::Draw(munchie.GetTexture(), &munchie.Position, &munchie.Rect);
 		}
 
 		// Draw ghosts
@@ -282,7 +272,10 @@ void Pacman::Draw(int elapsedTime)
 		}
 
 		// Draw Cherry
-		SpriteBatch::Draw(_cherry->texture, _cherry->position, _cherry->rect);
+		for (const Food& cherry : _cherries)
+		{
+			SpriteBatch::Draw(cherry.GetTexture(), &cherry.Position, &cherry.Rect);
+		}
 
 		// Draw Player
 		if (!_pacman->isDead)
@@ -452,6 +445,7 @@ void Pacman::GenerateLevel()
 
 	// Generate dynamic array for munchies
 	_munchiesVector = vector<Food>();
+	_cherries = vector<Food>();
 
 	// Reserve the size to avoid the array constantly upping its size
 	_tiles.reserve(width * height);
@@ -620,6 +614,12 @@ void Pacman::GenerateLevel()
 			if (red == 200 && green == 200 && blue == 40 && alpha == 255)
 			{
 				_tiles.push_back(LoadMunchieTile(x, y));
+			}
+
+			// Cherry
+			if (red == 85 && green == 0 && blue == 0 && alpha == 255)
+			{
+				_tiles.push_back(LoadCherryTile(x, y));
 			}
 
 			// Ghosts
@@ -814,21 +814,24 @@ void Pacman::MoveGhosts(int elapsedTime)
 // Checks wether Pacman collides with any of the Cherries
 void Pacman::CheckCherryCollisions()
 {
-	// Cherry collision
-	if (CheckBoxCollision(
-		_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Width,
-		_cherry->position->X, _cherry->position->Y, (float)_cherry->rect->Width, (float)_cherry->rect->Width))
+	// Munchie collision
+	for (Food& cherry : _cherries)
 	{
-		// Collision detected
-
-		// Update score
-		_curScore += 200;
-		// Move Cherry out of the screen bounds
-		_cherry->position = new Vector2(-100.0f, -100.0f);
+		if (CheckBoxCollision(
+			_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Height,
+			cherry.Position.X, cherry.Position.Y, (float)cherry.Rect.Width, (float)cherry.Rect.Width) &&
+			cherry.Collected == false)
+		{
+			// they collision
+			_curScore += 100;
+			// Move Cherry out of the screen bounds
+			cherry.Position = Vector2(-100, -100);
+			cherry.Collected = true;
+		}
 	}
 }
 
-// Checks whether Pacman collides with any of the ghosts
+// Checks whether Pacman collides with any of the ghosts.
 void Pacman::CheckGhostCollisions()
 {
 	// Local Variables
@@ -854,7 +857,22 @@ void Pacman::CheckGhostCollisions()
 		if ((bottom1 > top2) && (top1 < bottom2) && (right1 > left2) && (left1 < right2))
 		{
 			// Collision detected
-			_pacman->isDead = true;
+			// Check to see if Pacman has been hurt. We do this to avoid the code being called multiple times
+			if (!_pacman->hurt)
+			{
+				// Pacman has not been hurt. Set it to true before continuing.
+				// This will ensure that the following code cannot run before hurt is set back to false
+				// Keep in mind, if Pacman is found to be colliding with the ghost RIGHT after this code executes, he will still lose health
+				// repeatedly. Considering pacman's position will reset, teleport him away before resetting the condition
+				_pacman->hurt = true;
+				
+
+				// Remove health and set state to dead, then reset hurt
+				_pacman->lives--;
+				cout << _pacman->lives << endl;
+				GameState::SetState(State::DEAD);
+				_pacman->hurt = false;
+			}
 		}
 	}
 }
@@ -928,6 +946,44 @@ void Pacman::SetupAStart(int width, int height)
 	_hasLoaded = true;
 }
 
+// Restart the level, resets position and direction of pacman and ghosts.
+void Pacman::RestartLevel()
+{
+	// Play death animation, then reset positions. For now,
+	// We'll just reset position of ghost and Pacman, then go back to playing
+	if (_pacman->lives <= 0)
+	{
+		GameState::SetState(State::GAMEOVER);
+		return;
+	}
+	_pacman->position = new Vector2(_pacman->startPosition.X, _pacman->startPosition.Y);
+	_pacman->direction = 0;
+
+	// Loop through all ghosts and reset their position and direction
+	for (Ghost& ghost : _ghosts)
+	{
+		ghost.Direction = 0;
+		ghost.Position = Vector2(ghost.StartPosition.X, ghost.StartPosition.Y);
+	}
+
+	// Go back into playing mode
+	GameState::SetState(State::PLAYING);
+}
+
+// Resets the level, resets position and direction of pacman, munchies ghosts.
+void Pacman::ResetLevel()
+{
+	// Loop through all munchies, reset position and collected boolean
+	for (Food& munchie : _munchiesVector)
+	{
+		munchie.Position = Vector2(munchie.StartPosition.X, munchie.StartPosition.Y);
+		munchie.Collected = false;
+	}
+
+	// Run restart level function as it contains everything we need already.
+	RestartLevel();
+}
+
 // Returns an empty tile and adds a munchie to the munchie vector
 Tile Pacman::LoadMunchieTile(int x, int y)
 {
@@ -942,11 +998,26 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
+// Returns an empty tile and adds a cherry to the cherry vector
+Tile Pacman::LoadCherryTile(int x, int y)
+{
+	// Cherry
+	Rect r = Rect(0, 0, 26, 26);
+	Texture2D* t = new Texture2D();
+	t->Load("Textures/Cherry.png", false);
+	Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + ((32 * 0.5f) - r.Height * 0.5f));
+	_cherries.push_back(Food(r, t, v));
+
+	// Return an empty tile
+	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
+}
+
 // Returns an empty tile and sets Pacman's starting position on that tile
 Tile Pacman::LoadPlayerStartTile(int x, int y)
 {
 	// Load Pacman
 	_pacman->position = new Vector2(x * 32.0f, y * 32.0f);
+	_pacman->startPosition = Vector2(_pacman->position->X, _pacman->position->Y);
 
 	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
