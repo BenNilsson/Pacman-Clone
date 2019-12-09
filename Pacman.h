@@ -31,6 +31,8 @@ struct Player {
 	int frame;
 	int currentFrameTime;
 	float speedMultiplier;
+	int lives;
+	bool hurt;
 	bool isDead;
 };
 

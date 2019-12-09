@@ -18,6 +18,8 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_pacman->currentFrameTime = 0;
 	_pacman->frame = 0;
 	_pacman->speedMultiplier = 1.0f;
+	_pacman->lives = 3;
+	_pacman->hurt = false;
 
 
 	_cherry = new Munchie();
@@ -323,6 +325,7 @@ void Pacman::Draw(int elapsedTime)
 
 }
 
+// Basic box-box colission
 bool Pacman::CheckBoxCollision(float x1, float y1, float width1, float height1, float x2, float y2, float width2, float height2)
 {
 	float left1 = x1;
@@ -342,6 +345,7 @@ bool Pacman::CheckBoxCollision(float x1, float y1, float width1, float height1, 
 	return true;
 }
 
+// Checks whether the game started input has been pressed and starts the game if so
 void Pacman::CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey)
 {
 	if (_intro->GetState() == SoundEffectState::PLAYING && _gameStarted == false)
@@ -373,6 +377,7 @@ void Pacman::CheckGameStarted(Input::KeyboardState* state, Input::Keys startKey)
 	
 }
 
+// Checks whether the pause input has been pressed and pauses the game if so
 void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 {
 	// Checks if we are in the game (ignores whether the game is paused or not)
@@ -405,6 +410,7 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pauseKey)
 	}
 }
 
+// Makes sure Pacman does not move out of the generated level's bounds
 void Pacman::CheckPacmanViewportCollision()
 {
 	// Checks if Pacman is off the right side of the screen
@@ -424,6 +430,7 @@ void Pacman::CheckPacmanViewportCollision()
 		_pacman->position->Y = (0.0f - 32.0f) + (float)_pacman->sourceRect->Height;
 }
 
+// Generates the Pacman level based on an image file's pixel colour data.
 void Pacman::GenerateLevel()
 {
 	// Load pixels from SOIL to get channels.
@@ -635,6 +642,7 @@ void Pacman::GenerateLevel()
 	SOIL_free_image_data(myImage);
 }
 
+// Changes Pacman direction based on user input
 void Pacman::PacmanInputMovement(Input::KeyboardState* state)
 {
 	// Checks if D key is pressed
@@ -657,6 +665,7 @@ void Pacman::PacmanInputMovement(Input::KeyboardState* state)
 	}
 }
 
+// Moves Pacman based on direction. Handles Tile collision as well
 void Pacman::MovePacman(int elapsedTime)
 {
 	float pacmanSpeed = _cPacmanSpeed * elapsedTime * _pacman->speedMultiplier;
@@ -732,6 +741,7 @@ void Pacman::MovePacman(int elapsedTime)
 	}
 }
 
+// Updates all munchie sprites and handles a shape shifting animation
 void Pacman::AnimateMunchieSprite(int elapsedTime)
 {
 	for (Food& food : _munchiesVector)
@@ -752,6 +762,7 @@ void Pacman::AnimateMunchieSprite(int elapsedTime)
 	}
 }
 
+// Updates Pacman's sprite based on the direction he is facing
 void Pacman::AnimatePacmanSprite(int elapsedTime)
 {
 	// Update Pacman frame time
@@ -773,6 +784,7 @@ void Pacman::AnimatePacmanSprite(int elapsedTime)
 	_pacman->sourceRect->Y = (float)_pacman->sourceRect->Height * (float)_pacman->direction;
 }
 
+// Moves ghosts from right to left on screen
 void Pacman::MoveGhosts(int elapsedTime)
 {
 	for (Ghost& ghost : _ghosts)
@@ -799,6 +811,7 @@ void Pacman::MoveGhosts(int elapsedTime)
 	}
 }
 
+// Checks wether Pacman collides with any of the Cherries
 void Pacman::CheckCherryCollisions()
 {
 	// Cherry collision
@@ -815,6 +828,7 @@ void Pacman::CheckCherryCollisions()
 	}
 }
 
+// Checks whether Pacman collides with any of the ghosts
 void Pacman::CheckGhostCollisions()
 {
 	// Local Variables
@@ -845,6 +859,7 @@ void Pacman::CheckGhostCollisions()
 	}
 }
 
+// Checks whether Pacman collides with any of the munchies
 void Pacman::CheckMunchieCollisions()
 {
 	// Munchie collision
@@ -866,6 +881,7 @@ void Pacman::CheckMunchieCollisions()
 	}
 }
 
+// Checks whether all food (of munchies vector) in the level has been collected
 void Pacman::CheckWin()
 {
 	bool won = false;
@@ -884,6 +900,7 @@ void Pacman::CheckWin()
 			GameState::SetState(State::WON);
 }
 
+// Sets up a node system for A start to use
 void Pacman::SetupAStart(int width, int height)
 {
 	// A* grid
@@ -911,6 +928,7 @@ void Pacman::SetupAStart(int width, int height)
 	_hasLoaded = true;
 }
 
+// Returns an empty tile and adds a munchie to the munchie vector
 Tile Pacman::LoadMunchieTile(int x, int y)
 {
 	// Munchie
@@ -924,6 +942,7 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
+// Returns an empty tile and sets Pacman's starting position on that tile
 Tile Pacman::LoadPlayerStartTile(int x, int y)
 {
 	// Load Pacman
@@ -932,6 +951,7 @@ Tile Pacman::LoadPlayerStartTile(int x, int y)
 	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
+// Returns an empty tile and adds a ghost to the ghost vector
 Tile Pacman::LoadEnemyTile(int x, int y)
 {
 	// Ghost
