@@ -4,6 +4,9 @@
 	Credits:
 	Big thanks to Sebastian Lague for the tutorial on the implementation of A*
 	Link: http://bit.ly/2pSeJUF
+
+	THIS PATHFINDING CLASS DOES NOT RETURN A PATH AND DOES NOT WORK
+	I HAVE LEFT THIS IN TO SHOW MY ATTEMPT AT IT
 */
 
 #include "S2D/S2D.h"

@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
+#include <cstdlib>
 #include "Grid.h"
 #include "Pathfinding.h"
 #include "GameState.h"
@@ -16,7 +18,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	_pacman->isDead = false;
 	_pacman->direction = 0;
 	_pacman->currentFrameTime = 0;
-	_pacman->frame = 0;
+	_pacman->idleFrame = 0;
 	_pacman->speedMultiplier = 1.0f;
 	_pacman->lives = 3;
 	_pacman->hurt = false;
@@ -26,8 +28,9 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f), 
 	keyDown = false;
 
 	// Sounds
-	_pop = new SoundEffect();
+	_chomp = new SoundEffect();
 	_intro = new SoundEffect();
+	_death = new SoundEffect();
 
 	// Menu
 	_pauseMenu = new Menu();
@@ -58,8 +61,9 @@ Pacman::~Pacman()
 	delete _pacman;
 
 	// Delete sounds
-	delete _pop;
+	delete _chomp;
 	delete _intro;
+	delete _death;
 
 	delete test;
 	delete test2;
@@ -99,6 +103,7 @@ void Pacman::LoadContent()
 	_healthTexture->Load("Textures/UI_Health.png", false);
 
 	// Set string position
+	LoadHighScore();
 	_curScore = 0;
 	_scorePosition = new Vector2(10.0f, 25.0f);
 
@@ -120,16 +125,25 @@ void Pacman::LoadContent()
 	_startMenu->drawMenu = true;
 
 	// Load Sounds
-	_pop->Load("Sounds/Chomp.wav");
+	_chomp->Load("Sounds/Chomp.wav");
 	_intro->Load("Sounds/Intro.wav");
+	_death->Load("Sounds/Death.wav");
 
 	// Check if the audio is initialised
 	if (!Audio::IsInitialised())
 		std::cout << "Audio is not initialised" << std::endl;
 
 	// Checks if sounds aren't loaded
-	if (!_pop->IsLoaded()) 
-		std::cout << "_pop member sound effect has not loaded" << std::endl;
+	if (!_chomp->IsLoaded()) 
+		std::cout << "_chomp member sound effect has not loaded" << std::endl;
+
+	// Checks if sounds aren't loaded
+	if (!_intro->IsLoaded())
+		std::cout << "_intro member sound effect has not loaded" << std::endl;
+
+	// Checks if sounds aren't loaded
+	if (!_death->IsLoaded())
+		std::cout << "_death member sound effect has not loaded" << std::endl;
 }
 
 void Pacman::Update(int elapsedTime)
@@ -137,16 +151,19 @@ void Pacman::Update(int elapsedTime)
 	// Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
 
+	// Included for testing pathfinding, does not work but left to show attempt of implementation
+	/*
 	if (keyboardState->IsKeyDown(Input::Keys::F) && keyDown == false)
 	{
 		keyDown = true;
 		_pf->FindPath(*_grid, _ghosts[0].Position, *_pacman->position);
 	}
+	
 
 	if (keyboardState->IsKeyUp(Input::Keys::F))
 	{
 		keyDown = false;
-	}
+	}*/
 
 	switch (GameState::GetState())
 	{
@@ -166,9 +183,11 @@ void Pacman::Update(int elapsedTime)
 		AnimatePacmanSprite(elapsedTime);
 		AnimatePowerPellets(elapsedTime);
 		MoveGhosts(elapsedTime);
+		for (Ghost& ghost : _ghosts)
+			ghost.UpdateFrightenedStage(elapsedTime);
 		CheckCherryCollisions();
 		CheckMunchieCollisions();
-		CheckPowerPelletCollisions();
+		CheckPowerPelletCollisions(elapsedTime);
 		CheckGhostCollisions();
 		CheckWin();
 		break;
@@ -179,9 +198,10 @@ void Pacman::Update(int elapsedTime)
 		ResetLevel();
 		break;
 	case State::DEAD:
-		RestartLevel();
+		AnimatePacmanSprite(elapsedTime);
 		break;
 	case State::GAMEOVER:
+		ResetGame();
 		break;
 
 	}
@@ -196,6 +216,9 @@ void Pacman::Draw(int elapsedTime)
 	// Allows us to easily create a string
 	std::stringstream stream;
 	stream << "Score: " << _curScore;
+
+	stringstream highScoreStream;
+	highScoreStream << "Highscore: " << _highscore;
 
 	// Start Drawing
 	SpriteBatch::BeginDraw();
@@ -301,8 +324,12 @@ void Pacman::Draw(int elapsedTime)
 			SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect);
 		}
 
-		// Draws String
+		// Draws score and high score
+		_scorePosition = new Vector2(10, 23);
 		SpriteBatch::DrawString(stream.str().c_str(), _scorePosition, Color::White);
+
+		_scorePosition->X = _scorePosition->X + 250;
+		SpriteBatch::DrawString(highScoreStream.str().c_str(), _scorePosition, Color::Yellow);
 	}
 
 
@@ -628,6 +655,34 @@ void Pacman::GenerateLevel()
 				_tiles.push_back(LoadPlayerStartTile(x, y));
 			}
 
+			// Intersection
+			if (red == 52 && green == 52 && blue == 20 && alpha == 255)
+			{
+				// Spawn munchie
+				// Munchie
+				Rect r = Rect(0, 0, 8, 8);
+				Texture2D* t = new Texture2D();
+				t->Load("Textures/Munchie.png", false);
+				Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + ((32 * 0.5f) - r.Height * 0.5f));
+				_munchiesVector.push_back(Food(r, t, v));
+
+				// Return tile of intersection
+				_tiles.push_back(Tile(x, y, nullptr, CollissionType::TILE_INTERSECTION));
+			}
+
+			// Ghost House
+			if (red == 13 && green == 13 && blue == 3 && alpha == 255)
+			{
+				// Ghost
+				Rect r = Rect(0, 0, 20, 20);
+				Texture2D* t = new Texture2D();
+				t->Load("Textures/GhostBlue.png", false);
+				Vector2 v = Vector2((x * 32) + ((32 * 0.5f) - r.Width * 0.5f), (y * 32) + (16 - (r.Height * 0.5f)));
+				_ghosts.push_back(Ghost(r, t, v));
+
+				_tiles.push_back(Tile(x, y, nullptr, CollissionType::TILE_GHOSTHOUSE));
+			}
+
 			// Munchie
 			if (red == 200 && green == 200 && blue == 40 && alpha == 255)
 			{
@@ -789,23 +844,59 @@ void Pacman::AnimatePowerPellets(int elapsedTime)
 // Updates Pacman's sprite based on the direction he is facing
 void Pacman::AnimatePacmanSprite(int elapsedTime)
 {
+	
 	// Update Pacman frame time
 	_pacman->currentFrameTime += elapsedTime;
 
 	if (_pacman->currentFrameTime > _cPacmanFrameTime) {
-		_pacman->frame++;
 
-		if (_pacman->frame >= 2)
-			_pacman->frame = 0;
+		// Pacman is not dead, run idle animation
+		_pacman->idleFrame++;
 
+		if (_pacman->idleFrame >= 2)
+			_pacman->idleFrame = 0;
+
+		if (GameState::GetState() == State::DEAD)
+		{
+			// Play Death sound
+			if (_death->GetState() == SoundEffectState::STOPPED && _pacman->deathFrame < 4)
+			{
+				Audio::Play(_death);
+			}
+
+			// Pacman is dead, play death animation
+			if (_pacman->deathFrame >= 4)
+			{
+				// Continue once the sound has stopped
+				if (_death->GetState() != SoundEffectState::PLAYING)
+				{
+					_pacman->deathFrame = 0;
+					RestartLevel();
+				}
+			}else _pacman->deathFrame++;
+		}
+		
+		
 		_pacman->currentFrameTime = 0;
 	}
+	
+	if (GameState::GetState() != State::DEAD)
+	{
+		// Set the X value to swap/animate between open and not open
+		_pacman->sourceRect->X = (float)_pacman->sourceRect->Width * (float)_pacman->idleFrame;
 
-	_pacman->sourceRect->X = (float)_pacman->sourceRect->Width * (float)_pacman->frame;
+		// Set the Pacman source rect to match with the row of the spritesheet which pacman needs
+		_pacman->sourceRect->Y = (float)_pacman->sourceRect->Height * (float)_pacman->direction;
+	}
+	else
+	{
+		// Set the x value to swap/animate between his death state
+		_pacman->sourceRect->X = (float)_pacman->sourceRect->Width * (float)_pacman->deathFrame;
 
+		// Set to Pacman source rect to match the row of the death animation
+		_pacman->sourceRect->Y = (float)_pacman->sourceRect->Height * 4.0f;
+	}
 
-	// Set the Pacman source rect to match with the row of the spritesheet which pacman needs
-	_pacman->sourceRect->Y = (float)_pacman->sourceRect->Height * (float)_pacman->direction;
 }
 
 // Moves ghosts from right to left on screen
@@ -813,26 +904,125 @@ void Pacman::MoveGhosts(int elapsedTime)
 {
 	for (Ghost& ghost : _ghosts)
 	{
-		if (ghost.Direction == 0)
+		float newMoveX = ghost.Position.X;
+		float newMoveY = ghost.Position.Y;
+
+		// Calculate future movement based on new direction
+		switch (ghost.Direction)
 		{
-			// Moves Right
-			ghost.Position.X += ghost.Speed * elapsedTime;
-		}
-		else if (ghost.Direction == 1)
-		{
-			// Moves Left
-			ghost.Position.X -= ghost.Speed * elapsedTime;
+		case 0:
+			// Right
+			newMoveX = (ghost.Position.X + ghost.Speed * elapsedTime) + 6;
+			break;
+		case 1:
+			// Down
+			newMoveY = (ghost.Position.Y + ghost.Speed * elapsedTime) + 6;
+			break;
+		case 2:
+			// Left
+			newMoveX = (ghost.Position.X - ghost.Speed * elapsedTime) - 6;
+			break;
+		case 3:
+			// Up
+			newMoveY = (ghost.Position.Y - ghost.Speed * elapsedTime) - 6;
+			break;
 		}
 
-		if (ghost.Position.X + ghost.Rect.Width >= _width)
+		bool canMove = false;
+
+		// Loop through each Tile to see whether or not we can collide with it
+		for (const Tile& tile : _tiles)
 		{
-			ghost.Direction = 1;
+			// Check tile's collision type
+			if (tile.Type != CollissionType::TILE_WALKABLE)
+			{
+				if(tile.Type == CollissionType::TILE_INTERSECTION)
+				{
+					// Get center of tile
+					Vector2 v = Vector2(tile.GetX() + (tile.Width * 0.5f), tile.GetY() + (tile.Height * 0.5f));
+					// center of ghost
+					Vector2 v2 = Vector2(ghost.Position.X + (ghost.Rect.Width * 0.5f), ghost.Position.Y + (ghost.Rect.Height * 0.5f));
+					// Check collision for intersections, only happen when in center
+					if (CheckBoxCollision(v2.X, v2.Y, 1, 1,
+						v.X, v.Y, 1, 1))
+					{
+						// Collision detected, set move to true
+						int dir = rand() % 4;
+						ghost.Direction = dir;
+						canMove = true;
+						break;
+					}
+					else canMove = true; // Considering we did not collide with anything, we are allowed to move to the location
+				}
+				else if (tile.Type == CollissionType::TILE_GHOSTHOUSE)
+				{
+					// Get center of tile
+					Vector2 v = Vector2(tile.GetX() + (tile.Width * 0.5f), tile.GetY() + (tile.Height * 0.5f));
+					// center of ghost
+					Vector2 v2 = Vector2(ghost.Position.X + (ghost.Rect.Width * 0.5f), ghost.Position.Y + (ghost.Rect.Height * 0.5f));
+					// Check collision for ghost house center, only happen when in center
+					if (CheckBoxCollision(v2.X, v2.Y, 1, 1,
+						v.X, v.Y, 1, 1))
+					{
+						// Collision detected, set move to true and direction to up
+						ghost.Direction = 3;
+						canMove = true;
+						break;
+					}
+					else canMove = true; // Considering we did not collide with anything, we are allowed to move to the location
+				}
+				else
+				{
+					// Check collision for normal walls
+					if (CheckBoxCollision(newMoveX, newMoveY, ghost.Rect.Width, ghost.Rect.Height,
+						tile.GetX(), tile.GetY(), tile.Width, tile.Height))
+					{
+						// Collision detected, set move to false and do not bother checking the rest of the tiles
+						int dir = ghost.Direction;
+						while (dir == ghost.Direction)
+						{
+							dir = rand() % 4;
+						}
+						ghost.Direction = dir;
+						canMove = false;
+						break;
+					}
+					else canMove = true; // Considering we did not collide with anything, we are allowed to move to the location
+				}
+			}
 		}
-		else if (ghost.Position.X <= 0)
+
+		// Now that we know whether or not we are good to move to the next spot, feel free to do so
+		if (canMove)
 		{
-			ghost.Direction = 0;
+			// Move dependt on direction
+			switch (ghost.Direction)
+			{
+			case 0:
+				ghost.Position.X += ghost.Speed * elapsedTime;
+				break;
+			case 1:
+				ghost.Position.Y += ghost.Speed * elapsedTime;
+				break;
+			case 2:
+				ghost.Position.X -= ghost.Speed * elapsedTime;
+				break;
+			case 3:
+				ghost.Position.Y -= ghost.Speed * elapsedTime;
+				break;
+			}
+
+			// Checks if ghosts are off the right side of the screen
+			if (ghost.Position.X + (float)ghost.Rect.Width > (float)_width)
+				ghost.Position.X = (0.0f - 32.0f) + (float)ghost.Rect.Width;
+
+			// Checks if Pacman is off the left side of the screen
+			if (ghost.Position.X - (float)ghost.Rect.Width < (0.0f - 32.0f))
+				ghost.Position.X = (float)_width - ghost.Rect.Width;
 		}
+		
 	}
+	
 }
 
 // Checks wether Pacman collides with any of the Cherries
@@ -847,7 +1037,7 @@ void Pacman::CheckCherryCollisions()
 			cherry.Collected == false)
 		{
 			// they collision
-			_curScore += 100;
+			AddScore(100);
 			// Move Cherry out of the screen bounds
 			cherry.Position = Vector2(-100, -100);
 			cherry.Collected = true;
@@ -881,21 +1071,33 @@ void Pacman::CheckGhostCollisions()
 		if ((bottom1 > top2) && (top1 < bottom2) && (right1 > left2) && (left1 < right2))
 		{
 			// Collision detected
-			// Check to see if Pacman has been hurt. We do this to avoid the code being called multiple times
-			if (!_pacman->hurt)
+			// Check if ghosts are frightened
+			if (ghost.isFrightened)
 			{
-				// Pacman has not been hurt. Set it to true before continuing.
-				// This will ensure that the following code cannot run before hurt is set back to false
-				// Keep in mind, if Pacman is found to be colliding with the ghost RIGHT after this code executes, he will still lose health
-				// repeatedly. Considering pacman's position will reset, teleport him away before resetting the condition
-				_pacman->hurt = true;
-				
+				ghost.Position = Vector2(ghost.StartPosition.X, ghost.StartPosition.Y);
+				ghost.isFrightened = false;
+				ghost.curFrightTime = 0;
+				ghost.Rect = Rect(0, 0, 20, 20);
+				AddScore(200);
+			}
+			else
+			{
+				// Check to see if Pacman has been hurt. We do this to avoid the code being called multiple times
+				if (!_pacman->hurt)
+				{
+					// Pacman has not been hurt. Set it to true before continuing.
+					// This will ensure that the following code cannot run before hurt is set back to false
+					// Keep in mind, if Pacman is found to be colliding with the ghost RIGHT after this code executes, he will still lose health
+					// repeatedly. Considering pacman's position will reset, teleport him away before resetting the condition
+					_pacman->hurt = true;
 
-				// Remove health and set state to dead, then reset hurt
-				_pacman->lives--;
-				GameState::SetState(State::DEAD);
-				_pacman->hurt = false;
-				break;
+
+					// Remove health and set state to dead, then reset hurt
+					_pacman->lives--;
+					GameState::SetState(State::DEAD);
+					_pacman->hurt = false;
+					break;
+				}
 			}
 		}
 	}
@@ -913,9 +1115,12 @@ void Pacman::CheckMunchieCollisions()
 			food.Collected == false)
 		{
 			// they collision
-			_curScore += 10;
-			// Play pop sound
-			Audio::Play(_pop);
+			AddScore(10);
+			// Play chomp sound
+			if (_chomp->GetState() == SoundEffectState::STOPPED)
+			{
+				Audio::Play(_chomp);
+			}
 			// Move Munchie out of the screen bounds
 			food.Position = Vector2(-100, -100);
 			food.Collected = true;
@@ -924,23 +1129,25 @@ void Pacman::CheckMunchieCollisions()
 }
 
 // Checks whether Pacman collides with any of the power pellets
-void Pacman::CheckPowerPelletCollisions()
+void Pacman::CheckPowerPelletCollisions(int elapsedTime)
 {
 	for (PowerPellet& pellet : _powerPellets)
 	{
 		// Check for collision
+		Vector2 v2 = Vector2(pellet.Position.X + (pellet.Rect.Width * 0.5f), pellet.Position.Y + (pellet.Rect.Height * 0.5f));
+
 		if (CheckBoxCollision(
 			_pacman->position->X, _pacman->position->Y, (float)_pacman->sourceRect->Width, (float)_pacman->sourceRect->Height,
-			pellet.Position.X, pellet.Position.Y, (float)pellet.Rect.Width, (float)pellet.Rect.Width) &&
+			v2.X, v2.Y, (float)pellet.Rect.Width, (float)pellet.Rect.Width) &&
 			pellet.Collected == false)
 		{
 			// Collision detected
-			_curScore += 50;
+			AddScore(50);
 			pellet.Position = Vector2(-100, -100);
 			pellet.Collected = true;
 			if (!pellet.Interacted)
 			{
-				pellet.Activate();
+				pellet.Activate(_ghosts);
 				pellet.Interacted = true;
 			}
 		}
@@ -1028,8 +1235,81 @@ void Pacman::ResetLevel()
 		munchie.Collected = false;
 	}
 
+	for (Ghost& ghost : _ghosts)
+	{
+		ghost.isFrightened = false;
+		ghost.curFrightTime = 0;
+		ghost.Rect = Rect(0, 0, 20, 20);
+	}
+
 	// Run restart level function as it contains everything we need already.
 	RestartLevel();
+}
+
+// Resets the level along with score and lives
+void Pacman::ResetGame()
+{
+	// Save highscore to file
+	SaveHighScore();
+
+	// Reset Level
+	_pacman->lives = 3;
+	_curScore = 0;
+	ResetLevel();
+}
+
+// Adds an integer to the current score of the game
+void Pacman::AddScore(int _addition)
+{
+	_curScore += _addition;
+	if (_curScore > _highscore)
+		_highscore = _curScore;
+}
+
+// Saves the current score to a file stored locally
+void Pacman::SaveHighScore()
+{
+	ofstream outfile(_scorePath);
+
+	// Check whether the file was opened
+	if (!outfile.is_open())
+	{
+		cerr << "SAVING SCORE - File Could Not Be Opened" << endl;
+		std::exit(1);
+	}
+
+	// File is open
+	outfile << _highscore;
+	// Close the file after use
+	outfile.close();
+}
+
+// Reads t he current score from a file stored locally
+void Pacman::LoadHighScore()
+{
+	int highScore;
+
+	ifstream infile(_scorePath);
+
+	// Check if the file was opened
+	if (infile.is_open())
+	{
+		// Loop through the file and save the first line
+		while (infile >> highScore)
+			_highscore = highScore;
+
+	// Close file after use
+	infile.close();
+	}
+	else
+	{
+		cerr << "LOADING SCORE - FILE COULD NOT BE OPENED. CREATING FILE" << endl;
+
+		// Create the file
+		ofstream outStream;
+		outStream.open(_scorePath);
+	}
+
 }
 
 // Returns an empty tile and adds a munchie to the munchie vector
@@ -1046,6 +1326,7 @@ Tile Pacman::LoadMunchieTile(int x, int y)
 	return Tile(x, y, nullptr, CollissionType::TILE_WALKABLE);
 }
 
+// Returns an empty tile and adds a power pellet to the power pellet vector
 Tile Pacman::LoadPowerPelletTile(int x, int y)
 {
 	// Power Pellet

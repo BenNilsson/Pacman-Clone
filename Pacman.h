@@ -31,7 +31,8 @@ struct Player {
 	Rect* sourceRect;
 	Texture2D* texture;
 	int direction;
-	int frame;
+	int idleFrame;
+	int deathFrame;
 	int currentFrameTime;
 	float speedMultiplier;
 	int lives;
@@ -96,13 +97,16 @@ private:
 	bool keyDown;
 
 	// Sounds
-	SoundEffect* _pop;
+	SoundEffect* _chomp;
 	SoundEffect* _intro;
+	SoundEffect* _death;
 	bool _introHasPlayed = false;
 
 	// Score
 	int _curScore;
+	int _highscore = 0;
 	Vector2* _scorePosition;
+	const string _scorePath = "score.dat";
 
 	// Constant data for Game Variables
 	const float _cPacmanSpeed;
@@ -126,12 +130,15 @@ private:
 	void CheckCherryCollisions();
 	void CheckGhostCollisions();
 	void CheckMunchieCollisions();
-	void CheckPowerPelletCollisions();
+	void CheckPowerPelletCollisions(int elapsedTime);
 	void CheckWin();
 	void SetupAStart(int width, int height);
 	void RestartLevel();
 	void ResetLevel();
-
+	void ResetGame();
+	void AddScore(int _addition);
+	void SaveHighScore();
+	void LoadHighScore();
 	Tile LoadMunchieTile(int x, int y);
 	Tile LoadPowerPelletTile(int x, int y);
 	Tile LoadCherryTile(int x, int y);

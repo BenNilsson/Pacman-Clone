@@ -14,6 +14,11 @@ public:
 	int Direction;
 	float Speed;
 
+	bool isFrightened = false;
+	const float frightenedTime = 7500;
+	float curFrightTime = 0;
+
+	void UpdateFrightenedStage(int elapsedTime);
 	const Texture2D* GetTexture() const;
 private:
 	Texture2D* Texture;
